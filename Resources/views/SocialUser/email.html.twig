@@ -1,0 +1,12 @@
+{% extends "::base.html.twig" %}
+
+{% block content %}
+  <form action="#" method="post">
+    {{ form_errors(form) }}
+    {{ form_label(form.email) }}
+  	{{ form_widget(form.email) }}
+  	{{ form_errors(form.email) }}
+  	{{ form_rest(form) }}
+  	<input type="submit" value="enviar" />
+  </form>
+{% endblock %}

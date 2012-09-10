@@ -1,0 +1,25 @@
+{
+    "name": "bitgandtter/bitsocialuser-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony Optime SocialUserBundle",
+    "keywords": ["Social User management"],
+    "homepage": "http://bitgandtter.github.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yasmany Cubela Medina",
+            "email": "yasmanycm@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "2.1.*",
+        "symfony/security-bundle": "2.1.*",
+        "bitgandtter/bituser-bundle": "self.version",
+    },
+    "autoload": {
+        "psr-0": { "BIT\\BITSocialUserBundle": "" }
+    },
+    "target-dir": "BITOptime/BITSocialUserBundle"
+}
