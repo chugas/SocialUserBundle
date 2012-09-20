@@ -1,6 +1,5 @@
 <?php
 namespace BIT\BITSocialUserBundle\Security\User\Provider;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -8,7 +7,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Doctrine\UserManager;
 use FOS\GoogleBundle\Google\GoogleSessionPersistence;
-use BIT\BITSocialUserBundle\Entity\User as SocialUser;
+use BIT\BITSocialUserBundle\Controller\SocialUserControllerService;
 
 class GoogleProvider implements UserProviderInterface
 {
@@ -16,16 +15,18 @@ class GoogleProvider implements UserProviderInterface
    * @var \GoogleApi
    */
   protected $googleApi;
-  protected $userManager;
   protected $validator;
-  protected $em;
+  protected $userManager;
+  protected $socialUserManager;
+  protected $objectManager;
 
-  public function __construct( GoogleSessionPersistence $googleApi, UserManager $userManager, Validator $validator, EntityManager $em )
+  public function __construct( GoogleSessionPersistence $googleApi, Validator $validator, UserManager $userManager, SocialUserControllerService $socialUserManager )
   {
     $this->googleApi = $googleApi;
-    $this->userManager = $userManager;
     $this->validator = $validator;
-    $this->em = $em;
+    $this->userManager = $userManager;
+    $this->socialUserManager = $socialUserManager;
+    $this->objectManager = $this->socialUserManager->getObjectManager( );
   }
 
   public function supportsClass( $class )
@@ -36,9 +37,10 @@ class GoogleProvider implements UserProviderInterface
   public function findUserByGIdOrEmail( $gId, $email = null )
   {
     $user = $this->userManager->findUserByUsernameOrEmail( $email );
+
     if ( !$user )
     {
-      $entity = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "id" => $gId ) );
+      $entity = $this->socialUserManager->getRepository( )->findOneBy( array( "social_id" => $gId ) );
 
       if ( is_object( $entity ) )
         $user = $entity->getUser( );
@@ -66,7 +68,7 @@ class GoogleProvider implements UserProviderInterface
         $user = $this->userManager->createUser( );
         $user->setPassword( '' );
         $user->setEnabled( true );
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "USER" ) ) );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "USER" ) ) );
       }
 
       if ( isset( $gData['name'] ) )
@@ -106,17 +108,17 @@ class GoogleProvider implements UserProviderInterface
 
       $this->userManager->updateUser( $user );
 
-      $socialUser = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "id" => $gData['id'] ) );
+      $socialUser = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "social_id" => $gData['id'] ) );
 
       if ( isset( $gData['id'] ) && !is_object( $socialUser ) )
       {
-        $socialUser = new SocialUser( );
-        $socialUser->setId( $gData['id'] );
+        $socialUser = $this->socialUserManager->create( );
+        $socialUser->setSocialId( $gData['id'] );
         $socialUser->setUser( $user );
         $socialUser->setSocialName( 'GOOGLE' );
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "GOOGLE" ) ) );
-        $this->em->persist( $socialUser );
-        $this->em->flush( );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "GOOGLE" ) ) );
+        $this->objectManager->persist( $socialUser );
+        $this->objectManager->flush( );
       }
     }
 
@@ -135,7 +137,7 @@ class GoogleProvider implements UserProviderInterface
       throw new UnsupportedUserException( sprintf( 'Instances of "%s" are not supported.', get_class( $user ) ));
     }
 
-    $entity = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "user" => $user->getId( ), "social_name" => "GOOGLE" ) );
+    $entity = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "user" => $user->getId( ), "social_name" => "GOOGLE" ) );
 
     if ( !is_object( $entity ) )
     {

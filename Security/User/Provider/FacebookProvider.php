@@ -1,13 +1,13 @@
 <?php
 namespace BIT\BITSocialUserBundle\Security\User\Provider;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Doctrine\UserManager;
-use BIT\BITSocialUserBundle\Entity\User as SocialUser;
+use FOS\GoogleBundle\Google\GoogleSessionPersistence;
+use BIT\BITSocialUserBundle\Controller\SocialUserControllerService;
 use \BaseFacebook;
 use \FacebookApiException;
 
@@ -21,12 +21,13 @@ class FacebookProvider implements UserProviderInterface
   protected $validator;
   protected $em;
 
-  public function __construct( BaseFacebook $facebook, UserManager $userManager, Validator $validator, EntityManager $em )
+  public function __construct( BaseFacebook $facebook, Validator $validator, UserManager $userManager, SocialUserControllerService $socialUserManage )
   {
     $this->facebook = $facebook;
-    $this->userManager = $userManager;
     $this->validator = $validator;
-    $this->em = $em;
+    $this->userManager = $userManager;
+    $this->socialUserManager = $socialUserManager;
+    $this->objectManager = $this->socialUserManager->getObjectManager( );
   }
 
   public function supportsClass( $class )
@@ -40,7 +41,7 @@ class FacebookProvider implements UserProviderInterface
 
     if ( !$user )
     {
-      $entity = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "id" => $fbId ) );
+      $entity = $this->socialUserManager->getRepository( )->findOneBy( array( "social_id" => $fbId ) );
 
       if ( is_object( $entity ) )
         $user = $entity->getUser( );
@@ -51,6 +52,7 @@ class FacebookProvider implements UserProviderInterface
 
   public function loadUserByUsername( $username )
   {
+    die( $username );
     try
     {
       $fbdata = $this->facebook->api( '/me' );
@@ -69,12 +71,12 @@ class FacebookProvider implements UserProviderInterface
         $user = $this->userManager->createUser( );
         $user->setEnabled( true );
         $user->setPassword( '' );
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "USER" ) ) );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "USER" ) ) );
       }
 
       if ( isset( $fbdata['id'] ) )
       {
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "FACEBOOK" ) ) );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "FACEBOOK" ) ) );
       }
 
       if ( isset( $fbdata['name'] ) )
@@ -113,17 +115,17 @@ class FacebookProvider implements UserProviderInterface
 
       $this->userManager->updateUser( $user );
 
-      $socialUser = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "id" => $fbdata['id'] ) );
+      $socialUser = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "social_id" => $fbdata['id'] ) );
 
       if ( isset( $fbdata['id'] ) && !is_object( $socialUser ) )
       {
-        $socialUser = new SocialUser( );
-        $socialUser->setId( $fbdata['id'] );
+        $socialUser = $this->socialUserManager->create( );
+        $socialUser->setSocialId( $fbdata['id'] );
         $socialUser->setUser( $user );
         $socialUser->setSocialName( 'FACEBOOK' );
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "FACEBOOK" ) ) );
-        $this->em->persist( $socialUser );
-        $this->em->flush( );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "FACEBOOK" ) ) );
+        $this->objectManager->persist( $socialUser );
+        $this->objectManager->flush( );
       }
     }
 
@@ -142,7 +144,7 @@ class FacebookProvider implements UserProviderInterface
       throw new UnsupportedUserException( sprintf( 'Instances of "%s" are not supported.', get_class( $user ) ));
     }
 
-    $entity = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "user" => $user->getId( ), "social_name" => "FACEBOOK" ) );
+    $entity = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "user" => $user->getId( ), "social_name" => "FACEBOOK" ) );
 
     if ( !is_object( $entity ) )
     {

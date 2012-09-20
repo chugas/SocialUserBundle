@@ -24,13 +24,6 @@ class SocialUserListener
     $this->em = $em;
   }
 
-  /**
-   * Register this listener with the EventDispatcher
-   *
-   * @param EventDispatcher $dispatcher
-   * @param integer $priority
-   */
-
   public function register( EventDispatcher $dispatcher, $priority = 0 )
   {
     $dispatcher->connect( 'social_user.event', array( $this, 'handle' ), $priority );
@@ -50,7 +43,7 @@ class SocialUserListener
 
   public function onKernelRequest( GetResponseEvent $event )
   {
-    if ( is_object( $this->sc->getToken() ) && $this->sc->isGranted( "ROLE_TWITTER" ) && $this->getOnlineUser( )->getEmail( ) === ""
+    if ( is_object( $this->sc->getToken( ) ) && $this->sc->isGranted( "ROLE_TWITTER" ) && $this->getOnlineUser( )->getEmail( ) === ""
         && substr_count( $event->getRequest( )->getRequestUri( ), "/security/email" ) === 0 && substr_count( $event->getRequest( )->getRequestUri( ), "/security/confirm-email" ) === 0 )
     {
       $response = new Response( );

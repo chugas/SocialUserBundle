@@ -1,7 +1,6 @@
 <?php
 
 namespace BIT\BITSocialUserBundle\Security\User\Provider;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -9,6 +8,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Doctrine\UserManager;
+use FOS\GoogleBundle\Google\GoogleSessionPersistence;
+use BIT\BITSocialUserBundle\Controller\SocialUserControllerService;
 use BIT\BITSocialUserBundle\Entity\User as SocialUser;
 use \TwitterOAuth;
 
@@ -18,18 +19,19 @@ class TwitterProvider implements UserProviderInterface
    * @var \Twitter
    */
   protected $twitter_oauth;
-  protected $userManager;
   protected $validator;
   protected $session;
-  protected $em;
+  protected $socialUserManager;
+  protected $objectManager;
 
-  public function __construct( TwitterOAuth $twitter_oauth, $userManager, Validator $validator, Session $session, EntityManager $em )
+  public function __construct( TwitterOAuth $twitter_oauth, Validator $validator, Session $session, UserManager $userManager, SocialUserControllerService $socialUserManager )
   {
     $this->twitter_oauth = $twitter_oauth;
-    $this->userManager = $userManager;
     $this->validator = $validator;
     $this->session = $session;
-    $this->em = $em;
+    $this->userManager = $userManager;
+    $this->socialUserManager = $socialUserManager;
+    $this->objectManager = $this->socialUserManager->getObjectManager( );
   }
 
   public function supportsClass( $class )
@@ -42,7 +44,7 @@ class TwitterProvider implements UserProviderInterface
     // TODO: search by name, and other data
     $user = null;
 
-    $entity = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "id" => $twitterID ) );
+    $entity = $this->socialUserManager->getRepository( )->findOneBy( array( "social_id" => $twitterID ) );
 
     if ( is_object( $entity ) )
       $user = $entity->getUser( );
@@ -73,7 +75,7 @@ class TwitterProvider implements UserProviderInterface
         $user->setEnabled( true );
         $user->setPassword( '' );
         $user->setEmail( '' );
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "USER" ) ) );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "USER" ) ) );
       }
 
       if ( isset( $info->id ) )
@@ -81,7 +83,7 @@ class TwitterProvider implements UserProviderInterface
         if ( !$user->getUsername( ) )
           $user->setUsername( $info->screen_name );
 
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "TWITTER" ) ) );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "TWITTER" ) ) );
       }
 
       if ( isset( $info->name ) )
@@ -103,17 +105,17 @@ class TwitterProvider implements UserProviderInterface
 
       $this->userManager->updateUser( $user );
 
-      $socialUser = $this->em->getRepository( "SocialUserBundle:User" )->findOneBy( array( "id" => $info->id ) );
+      $socialUser = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "social_id" => $info->id ) );
 
       if ( isset( $info->id ) && !is_object( $socialUser ) )
       {
-        $socialUser = new SocialUser( );
-        $socialUser->setId( $info->id );
+        $socialUser = $this->socialUserManager->create( );
+        $socialUser->setSocialId( $info->id );
         $socialUser->setUser( $user );
         $socialUser->setSocialName( 'TWITTER' );
-        $user->addGroup( $this->em->getRepository( "BIT\BITUserBundle\Entity\Group" )->findOneBy( array( "name" => "TWITTER" ) ) );
-        $this->em->persist( $socialUser );
-        $this->em->flush( );
+        $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "TWITTER" ) ) );
+        $this->objectManager->persist( $socialUser );
+        $this->objectManager->flush( );
       }
     }
 
@@ -132,7 +134,7 @@ class TwitterProvider implements UserProviderInterface
       throw new UnsupportedUserException( sprintf( 'Instances of "%s" are not supported.', get_class( $user ) ));
     }
 
-    $entity = $this->em->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "user" => $user->getId( ), "social_name" => "TWITTER" ) );
+    $entity = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "user" => $user->getId( ), "social_name" => "TWITTER" ) );
 
     if ( !is_object( $entity ) )
     {

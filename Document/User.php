@@ -1,36 +1,42 @@
 <?php
 
-namespace BIT\BITSocialUserBundle\Entity;
+namespace BIT\BITSocialUserBundle\Document;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="social_user")
+ * @MongoDB\Document(collection="social_user")
  */
 class User
 {
   /**
-   * @ORM\Id
-   * @ORM\Column(type="string")
+   * @MongoDB\Id
+   */
+  protected $id;
+
+  /**
+   * @MongoDB\String
    */
   protected $social_id;
 
   /**
-   * @ORM\Id
-   * @ORM\ManyToOne(targetEntity="BIT\BITUserBundle\Entity\User" )
-   * @ORM\JoinColumn(name="user", referencedColumnName="id", onDelete="CASCADE")
+   * @MongoDB\ReferenceOne(targetDocument="BIT\BITUserBundle\Document\User")
    */
   protected $user;
 
   /**
-   * @ORM\Column(type="string")
+   * @MongoDB\String
    */
   protected $social_name;
 
+  public function getId( )
+  {
+    return $this->id;
+  }
+
   public function setSocialId( $socialId )
   {
-    $this->$social_id = $socialId;
+    $this->social_id = $socialId;
   }
 
   public function getSocialId( )
@@ -38,7 +44,7 @@ class User
     return $this->social_id;
   }
 
-  public function setUser( \BIT\BITUserBundle\Entity\User $user )
+  public function setUser( \BIT\BITUserBundle\Document\User $user )
   {
     $this->user = $user;
   }

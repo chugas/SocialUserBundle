@@ -1,4 +1,9 @@
-services:            
+services:
+  bit_social_user:
+    class: BIT\BITSocialUserBundle\Controller\SocialUserControllerService
+    calls:
+      - [ setContainer, [ @service_container ] ]
+      
   kernel.listener.bit_social_security:
     class: BIT\BITSocialUserBundle\Listeners\SocialUserListener
     arguments: [@session, @security.context, @doctrine.orm.entity_manager]
