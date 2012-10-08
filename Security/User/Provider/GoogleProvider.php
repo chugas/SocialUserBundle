@@ -59,7 +59,8 @@ class GoogleProvider implements UserProviderInterface
       $gData = null;
     }
 
-    $user = $this->findUserByGIdOrEmail( $username, isset( $gData['email'] ) ? $gData['email'] : null );
+    $email = $gData->getEmail( );
+    $user = $this->findUserByGIdOrEmail( $username, isset( $email ) ? $email : null );
 
     if ( !empty( $gData ) )
     {
@@ -71,9 +72,10 @@ class GoogleProvider implements UserProviderInterface
         $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "USER" ) ) );
       }
 
-      if ( isset( $gData['name'] ) )
+      $name = $gData->getName( );
+      if ( isset( $name ) )
       {
-        $nameAndLastNames = explode( " ", $gData['name'] );
+        $nameAndLastNames = explode( " ", $name );
 
         if ( count( $nameAndLastNames ) > 1 )
         {
@@ -89,15 +91,15 @@ class GoogleProvider implements UserProviderInterface
         }
       }
 
-      if ( isset( $gData['email'] ) )
+      if ( isset( $email ) )
       {
-        $user->setEmail( $gData['email'] );
-        $user->setUsername( $gData['email'] );
+        $user->setEmail( $email );
+        $user->setUsername( $email );
       }
       else
       {
-        $user->setEmail( $gData['id'] . "@google.com" );
-        $user->setUsername( $gData['id'] . "@google.com" );
+        $user->setEmail( $gData->getId( ) . "@google.com" );
+        $user->setUsername( $gData->getId( ) . "@google.com" );
       }
 
       if ( count( $this->validator->validate( $user, 'Google' ) ) )
@@ -108,12 +110,12 @@ class GoogleProvider implements UserProviderInterface
 
       $this->userManager->updateUser( $user );
 
-      $socialUser = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "social_id" => $gData['id'] ) );
+      $socialUser = $this->objectManager->getRepository( "BITSocialUserBundle:User" )->findOneBy( array( "social_id" => $gData->getId( ) ) );
 
-      if ( isset( $gData['id'] ) && !is_object( $socialUser ) )
+      if ( !is_object( $socialUser ) )
       {
         $socialUser = $this->socialUserManager->create( );
-        $socialUser->setSocialId( $gData['id'] );
+        $socialUser->setSocialId( $gData->getId( ) );
         $socialUser->setUser( $user );
         $socialUser->setSocialName( 'GOOGLE' );
         $user->addGroup( $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "GOOGLE" ) ) );
