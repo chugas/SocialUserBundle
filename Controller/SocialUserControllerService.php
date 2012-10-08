@@ -27,21 +27,19 @@ class SocialUserControllerService extends Controller
 
   public function getObjectManager( )
   {
+    $managerName = $this->container->getParameter( 'fos_user.model_manager_name' );
+
     switch ( $this->container->getParameter( 'fos_user.storage' ) )
     {
       case 'orm':
         {
-          $doctrineServiceManager = 'doctrine.orm.entity_manager';
-          break;
+          return $this->getDoctrine( )->getManager( $managerName );
         }
       case 'mongodb':
         {
-          $doctrineServiceManager = 'doctrine.odm.mongodb.document_manager';
-          break;
+          return $this->get( 'doctrine_mongodb' )->getManager( $managerName );
         }
     }
-
-    return $this->get( $doctrineServiceManager );
   }
 
   public function getRepository( )
