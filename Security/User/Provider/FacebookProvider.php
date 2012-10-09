@@ -52,7 +52,6 @@ class FacebookProvider implements UserProviderInterface
 
   public function loadUserByUsername( $username )
   {
-    die( $username );
     try
     {
       $fbdata = $this->facebook->api( '/me' );

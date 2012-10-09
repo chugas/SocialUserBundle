@@ -59,11 +59,11 @@ class GoogleProvider implements UserProviderInterface
       $gData = null;
     }
 
-    $email = $gData->getEmail( );
-    $user = $this->findUserByGIdOrEmail( $username, isset( $email ) ? $email : null );
-
     if ( !empty( $gData ) )
     {
+      $email = $gData->getEmail( );
+      $user = $this->findUserByGIdOrEmail( $username, isset( $email ) ? $email : null );
+
       if ( empty( $user ) )
       {
         $user = $this->userManager->createUser( );
