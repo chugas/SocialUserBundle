@@ -51,7 +51,7 @@ class SocialUserController extends Controller
     // get user
     $user = $this->getOnlineUser( );
     // create form
-    $form = $this->get( 'form.factory' )->create( new EmailType( ), $user );
+    $form = $this->get( 'form.factory' )->create( $this->get( 'bit_social_user' )->getType( ), $user );
 
     if ( $this->get( 'request' )->getMethod( ) == 'POST' )
     {
@@ -67,21 +67,18 @@ class SocialUserController extends Controller
         $url = $this->get( 'router' )->generate( "_confirmEmail", $urlParameters, true );
         $parameters = array( 'name' => $user->getFullName( ), 'url' => $url, 'token' => $user->getConfirmationToken( ) );
         $body = $this->renderView( 'BITSocialUserBundle:SocialUser:confirmationEmail.html.twig', $parameters );
-        /* $message = \Swift_Message::newInstance( );
+        $message = \Swift_Message::newInstance( );
         $message->setContentType( "text/html" );
         $message->setSubject( 'Email Confirmation' );
-        $message->setFrom( 'no-reply@sunscient.com' );
+        $message->setFrom( 'no-reply@sunscious.com' );
         $message->setTo( $user->getEmail( ) );
         $message->setBody( $body );
-        $this->get( 'mailer' )->send( $message ); */
-        $this->get( 'fos.mailer' )->sendConfirmationEmailMessage( $user );
+        $this->get( 'mailer' )->send( $message );
 
         // set session flag to send user to email confirmation page until the email is confirmed
-        //$this->get( "session" )->set( "confirmation", true );
+        $this->get( "session" )->set( "confirmation", true );
 
-        //return new RedirectResponse( $this->get( 'router' )->generate( "_confirmEmail" ));
-
-        return $this->get( 'templating' )->renderResponse( 'FOSUserBundle:Registration:checkEmail.html.' . $this->getEngine( ), array( 'user' => $user, ) );
+        return $this->get( 'templating' )->renderResponse( 'FOSUserBundle:Registration:checkEmail.html.twig', array( 'user' => $user, ) );
       }
     }
 
