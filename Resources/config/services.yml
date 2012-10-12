@@ -3,12 +3,6 @@ services:
     class: BIT\BITSocialUserBundle\Controller\SocialUserControllerService
     calls:
       - [ setContainer, [ @service_container ] ]
-      
-  kernel.listener.bit_social_security:
-    class: BIT\BITSocialUserBundle\Listeners\SocialUserListener
-    arguments: [@session, @security.context, @doctrine.orm.entity_manager]
-    tags:
-        - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
         
   facebook.user:
       class: BIT\BITSocialUserBundle\Security\User\Provider\FacebookProvider
