@@ -42,7 +42,7 @@ class TwitterProvider extends SocialUserProvider
     }
 
     $data = array( );
-    $data['id'] = str( $info->id );
+    $data['id'] = strtolower( $info->id );
     $data['email'] = sprintf( "%s@%s.com", $data['id'], strtolower( $this->providerName ) );
     $data['name'] = $info->name;
 
