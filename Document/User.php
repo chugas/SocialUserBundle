@@ -20,7 +20,7 @@ class User
   protected $social_id;
 
   /**
-   * @MongoDB\ReferenceOne(targetDocument="BIT\BITUserBundle\Document\User")
+   * @MongoDB\ReferenceOne(targetDocument="BIT\BITUserBundle\Document\User", cascade={"all"})
    */
   protected $user;
 
