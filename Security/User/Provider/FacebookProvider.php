@@ -16,14 +16,15 @@ class FacebookProvider extends SocialUserProvider
    * @var \Facebook
    */
   protected $facebook;
-
-  public function __construct( BaseFacebook $facebook, Validator $validator, UserManager $userManager, SocialUserControllerService $socialUserManager )
+  
+  public function __construct( BaseFacebook $facebook, Validator $validator, UserManager $userManager,
+      SocialUserControllerService $socialUserManager )
   {
     parent::__construct( $validator, $userManager, $socialUserManager );
     $this->facebook = $facebook;
     $this->providerName = "Facebook";
   }
-
+  
   protected function getData( )
   {
     try
@@ -34,12 +35,12 @@ class FacebookProvider extends SocialUserProvider
     {
       $fbdata = null;
     }
-
+    
     $data = array( );
-    $data['email'] = $fbdata['email'];
-    $data['name'] = $fbdata['name'];
-    $data['id'] = $fbdata['id'];
-
+    $data[ 'email' ] = $fbdata[ 'email' ];
+    $data[ 'name' ] = $fbdata[ 'name' ];
+    $data[ 'id' ] = $fbdata[ 'id' ];
+    
     return $data;
   }
 }

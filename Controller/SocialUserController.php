@@ -14,7 +14,7 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 
 class SocialUserController extends Controller
 {
-
+  
   public function getOnlineUser( )
   {
     $token = $this->get( 'security.context' )->getToken( "user" );
@@ -26,11 +26,11 @@ class SocialUserController extends Controller
     }
     return null;
   }
-
+  
   /**
    * @Route("/connectTwitter", name="connect_twitter")
    */
-
+  
   public function connectTwitterAction( )
   {
     $request = $this->get( 'request' );
@@ -39,30 +39,30 @@ class SocialUserController extends Controller
     $response = new RedirectResponse( $authURL);
     return $response;
   }
-
+  
   /**
    * @Route("/email")
    * @Template()
    * @Secure(roles="ROLE_TWITTER")
    */
-
+  
   public function emailAction( )
   {
     // get user
     $user = $this->getOnlineUser( );
     // create form
     $form = $this->get( 'form.factory' )->create( $this->get( 'bit_social_user' )->getType( ), $user );
-
+    
     if ( $this->get( 'request' )->getMethod( ) == 'POST' )
     {
       $form->bindRequest( $this->get( 'request' ) );
       if ( $form->isValid( ) )
       {
         $user->setConfirmationToken( $this->get( 'fos_user.util.token_generator' )->generateToken( ) );
-
+        
         $em = $this->getDoctrine( )->getEntityManager( );
         $em->flush( );
-
+        
         $urlParameters = array( 'email' => $user->getEmail( ), 'token' => $user->getConfirmationToken( ) );
         $url = $this->get( 'router' )->generate( "_confirmEmail", $urlParameters, true );
         $parameters = array( 'name' => $user->getFullName( ), 'url' => $url, 'token' => $user->getConfirmationToken( ) );
@@ -74,23 +74,24 @@ class SocialUserController extends Controller
         $message->setTo( $user->getEmail( ) );
         $message->setBody( $body );
         $this->get( 'mailer' )->send( $message );
-
+        
         // set session flag to send user to email confirmation page until the email is confirmed
         $this->get( "session" )->set( "confirmation", true );
-
-        return $this->get( 'templating' )->renderResponse( 'FOSUserBundle:Registration:checkEmail.html.twig', array( 'user' => $user, ) );
+        
+        return $this->get( 'templating' )
+            ->renderResponse( 'FOSUserBundle:Registration:checkEmail.html.twig', array( 'user' => $user, ) );
       }
     }
-
+    
     return array( "form" => $form->createView( ) );
   }
-
+  
   /**
    * @Route("/confirm-email", name="_confirmEmail")
    * @Template()
    * @Secure(roles="ROLE_TWITTER")
    */
-
+  
   public function confirmEmailAction( )
   {
     // get user
@@ -113,7 +114,7 @@ class SocialUserController extends Controller
           $dbUserToMerge = $repo->findBy( array( "email" => $email ) );
           if ( is_array( $dbUserToMerge ) && !empty( $dbUserToMerge ) )
           {
-            $dbUserToMerge = $dbUserToMerge[0];
+            $dbUserToMerge = $dbUserToMerge[ 0 ];
             // mergin
             $dbUserToMerge->setTwitterID( $twitterID );
             // delete previous user
@@ -132,7 +133,12 @@ class SocialUserController extends Controller
           return new RedirectResponse( $this->get( 'router' )->generate( "_confirmEmail" ));
       }
     }
-
+    
     return new RedirectResponse( $this->get( 'router' )->generate( "home" ));
+  }
+  
+  public function check( )
+  {
+    
   }
 }

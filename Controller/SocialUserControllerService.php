@@ -7,7 +7,7 @@ use BIT\BITSocialUserBundle\Form\MongoEmailType;
 
 class SocialUserControllerService extends Controller
 {
-
+  
   public function create( )
   {
     switch ( $this->container->getParameter( 'fos_user.storage' ) )
@@ -23,14 +23,14 @@ class SocialUserControllerService extends Controller
           break;
         }
     }
-
+    
     return new $fqcn( );
   }
-
+  
   public function getObjectManager( )
   {
     $managerName = $this->container->getParameter( 'fos_user.model_manager_name' );
-
+    
     switch ( $this->container->getParameter( 'fos_user.storage' ) )
     {
       case 'orm':
@@ -43,12 +43,12 @@ class SocialUserControllerService extends Controller
         }
     }
   }
-
+  
   public function getRepository( )
   {
     return $this->getObjectManager( )->getRepository( "BITSocialUserBundle:User" );
   }
-
+  
   public function getType( )
   {
     switch ( $this->container->getParameter( 'fos_user.storage' ) )

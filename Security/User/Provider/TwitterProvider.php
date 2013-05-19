@@ -19,19 +19,21 @@ class TwitterProvider extends SocialUserProvider
    */
   protected $twitter_oauth;
   protected $session;
-
-  public function __construct( TwitterOAuth $twitter_oauth, Validator $validator, Session $session, UserManager $userManager, SocialUserControllerService $socialUserManager )
+  
+  public function __construct( TwitterOAuth $twitter_oauth, Validator $validator, Session $session,
+      UserManager $userManager, SocialUserControllerService $socialUserManager )
   {
     parent::__construct( $validator, $userManager, $socialUserManager );
     $this->session = $session;
     $this->twitter_oauth = $twitter_oauth;
     $this->providerName = "Twitter";
   }
-
+  
   protected function getData( )
   {
-    $this->twitter_oauth->setOAuthToken( $this->session->get( 'access_token' ), $this->session->get( 'access_token_secret' ) );
-
+    $this->twitter_oauth
+        ->setOAuthToken( $this->session->get( 'access_token' ), $this->session->get( 'access_token_secret' ) );
+    
     try
     {
       $info = $this->twitter_oauth->get( 'account/verify_credentials' );
@@ -40,12 +42,12 @@ class TwitterProvider extends SocialUserProvider
     {
       $info = null;
     }
-
+    
     $data = array( );
-    $data['id'] = strtolower( $info->id );
-    $data['email'] = sprintf( "%s@%s.com", $data['id'], strtolower( $this->providerName ) );
-    $data['name'] = $info->name;
-
+    $data[ 'id' ] = strtolower( $info->id );
+    $data[ 'email' ] = sprintf( "%s@%s.com", $data[ 'id' ], strtolower( $this->providerName ) );
+    $data[ 'name' ] = $info->name;
+    
     return $data;
   }
 }
