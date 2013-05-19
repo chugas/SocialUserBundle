@@ -2,3 +2,7 @@ BITSecurityBundle:
     resource: "@BITSocialUserBundle/Controller/"
     type:     annotation
     prefix: /security
+    
+fos_user_security_check:
+    pattern:      /login_check
+    defaults:  { _controller: FOSUserBundle:Security:check }
