@@ -29,17 +29,12 @@ class FacebookProvider extends SocialUserProvider
   {
     try
     {
-      $fbdata = $this->facebook->api( '/me' );
+      $data = $this->facebook->api( '/me' );
     }
     catch ( FacebookApiException $e )
     {
-      $fbdata = null;
+      $data = null;
     }
-    
-    $data = array( );
-    $data[ 'email' ] = $fbdata[ 'email' ];
-    $data[ 'name' ] = $fbdata[ 'name' ];
-    $data[ 'id' ] = $fbdata[ 'id' ];
     
     return $data;
   }
