@@ -34,9 +34,8 @@ class SocialUserController extends Controller
   
   public function connectTwitterAction( )
   {
-    $request = $this->get( 'request' );
     $twitter = $this->get( 'fos_twitter.service' );
-    $authURL = $twitter->getLoginUrl( $request );
+    $authURL = $twitter->getLoginUrl( );
     $response = new RedirectResponse( $authURL);
     return $response;
   }
