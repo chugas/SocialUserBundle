@@ -23,5 +23,6 @@
     "autoload": {
         "psr-0": { "BIT\\BITSocialUserBundle": "" }
     },
-    "target-dir": "BIT/BITSocialUserBundle"
+    "target-dir": "BIT/BITSocialUserBundle",
+    "minimum-stability": "stable"
 }
