@@ -15,14 +15,13 @@
         "php": ">=5.3.2",
         "symfony/framework-bundle": ">=2.1",
         "symfony/security-bundle": ">=2.1",
-        "bitgandtter/bituser-bundle": "dev-master",
-        "bitgandtter/google-bundle": "dev-master",
-        "bitgandtter/facebook-bundle": "dev-master",
-        "bitgandtter/twitter-bundle": "dev-master"
+        "bitgandtter/bituser-bundle": "0.1",
+        "bitgandtter/google-bundle": "0.2.1",
+        "bitgandtter/facebook-bundle": "1.1",
+        "bitgandtter/twitter-bundle": "1.1"
     },
     "autoload": {
         "psr-0": { "BIT\\BITSocialUserBundle": "" }
     },
-    "target-dir": "BIT/BITSocialUserBundle",
-    "minimum-stability": "stable"
+    "target-dir": "BIT/BITSocialUserBundle"
 }
