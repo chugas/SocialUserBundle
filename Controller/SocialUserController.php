@@ -39,4 +39,14 @@ class SocialUserController extends Controller
     $response = new RedirectResponse( $authURL);
     return $response;
   }
+  
+  /**
+   * @Route("/login_check", name="login_check")
+   * @Method("GET")
+   */
+  
+  public function checkAction( )
+  {
+    
+  }
 }
