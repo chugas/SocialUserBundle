@@ -1,5 +1,5 @@
 {
-    "name": "bitgandtter/bitsocialuser-bundle",
+    "name": "bitgandtter/socialuser-bundle",
     "type": "symfony-bundle",
     "description": "Symfony Optime SocialUserBundle",
     "keywords": ["Social User management"],
