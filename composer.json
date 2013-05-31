@@ -1,8 +1,8 @@
 {
     "name": "bitgandtter/socialuser-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony Optime SocialUserBundle",
-    "keywords": ["Social User management"],
+    "description": "Symfony BIT SocialUserBundle",
+    "keywords": ["Social User Management"],
     "homepage": "http://bitgandtter.github.com",
     "license": "MIT",
     "authors": [
@@ -21,7 +21,7 @@
         "bitgandtter/twitter-bundle": ">=1.1"
     },
     "autoload": {
-        "psr-0": { "BIT\\BITSocialUserBundle": "" }
+        "psr-0": { "BIT\\SocialUserBundle": "" }
     },
-    "target-dir": "BIT/BITSocialUserBundle"
+    "target-dir": "BIT/SocialUserBundle"
 }

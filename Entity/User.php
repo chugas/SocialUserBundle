@@ -1,6 +1,6 @@
 <?php
 
-namespace BIT\BITSocialUserBundle\Entity;
+namespace BIT\SocialUserBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,7 +18,7 @@ class User
   
   /**
    * @ORM\Id
-   * @ORM\ManyToOne(targetEntity="BIT\BITUserBundle\Entity\User" )
+   * @ORM\ManyToOne(targetEntity="BIT\UserBundle\Entity\User" )
    * @ORM\JoinColumn(name="user", referencedColumnName="id", onDelete="CASCADE")
    */
   protected $user;
@@ -38,7 +38,7 @@ class User
     return $this->social_id;
   }
   
-  public function setUser( \BIT\BITUserBundle\Entity\User $user )
+  public function setUser( \BIT\UserBundle\Entity\User $user )
   {
     $this->user = $user;
   }

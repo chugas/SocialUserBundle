@@ -1,18 +1,18 @@
 services:
   bit_social_user:
-    class: BIT\BITSocialUserBundle\Controller\SocialUserControllerService
+    class: BIT\SocialUserBundle\Controller\SocialUserControllerService
     calls:
       - [ setContainer, [ @service_container ] ]
         
   facebook.user:
-      class: BIT\BITSocialUserBundle\Security\User\Provider\FacebookProvider
+      class: BIT\SocialUserBundle\Security\User\Provider\FacebookProvider
       arguments:
           facebook: @fos_facebook.api
           validator: @validator
           userManager: @fos_user.user_manager
           socialUserManager: @bit_social_user
   twitter.user:
-      class: BIT\BITSocialUserBundle\Security\User\Provider\TwitterProvider
+      class: BIT\SocialUserBundle\Security\User\Provider\TwitterProvider
       arguments:
           twitter_oauth: @fos_twitter.api
           validator: @validator
@@ -20,7 +20,7 @@ services:
           userManager: @fos_user.user_manager
           socialUserManager: @bit_social_user
   google.user:
-      class: BIT\BITSocialUserBundle\Security\User\Provider\GoogleProvider
+      class: BIT\SocialUserBundle\Security\User\Provider\GoogleProvider
       arguments:
           google: @fos_google.api
           validator: @validator

@@ -1,12 +1,12 @@
 <?php
-namespace BIT\BITSocialUserBundle\Security\User\Provider;
+namespace BIT\SocialUserBundle\Security\User\Provider;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Doctrine\UserManager;
-use BIT\BITSocialUserBundle\Controller\SocialUserControllerService;
+use BIT\SocialUserBundle\Controller\SocialUserControllerService;
 
 abstract class SocialUserProvider implements UserProviderInterface
 {

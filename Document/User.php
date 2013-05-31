@@ -1,6 +1,6 @@
 <?php
 
-namespace BIT\BITSocialUserBundle\Document;
+namespace BIT\SocialUserBundle\Document;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
@@ -20,7 +20,7 @@ class User
   protected $social_id;
   
   /**
-   * @MongoDB\ReferenceOne(targetDocument="BIT\BITUserBundle\Document\User", cascade={"all"})
+   * @MongoDB\ReferenceOne(targetDocument="BIT\UserBundle\Document\User", cascade={"all"})
    */
   protected $user;
   
@@ -44,7 +44,7 @@ class User
     return $this->social_id;
   }
   
-  public function setUser( \BIT\BITUserBundle\Document\User $user )
+  public function setUser( \BIT\UserBundle\Document\User $user )
   {
     $this->user = $user;
   }

@@ -1,9 +1,9 @@
 <?php
 
-namespace BIT\BITSocialUserBundle\Controller;
+namespace BIT\SocialUserBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use BIT\BITSocialUserBundle\Form\EmailType;
-use BIT\BITSocialUserBundle\Form\MongoEmailType;
+use BIT\SocialUserBundle\Form\EmailType;
+use BIT\SocialUserBundle\Form\MongoEmailType;
 
 class SocialUserControllerService extends Controller
 {
@@ -14,12 +14,12 @@ class SocialUserControllerService extends Controller
     {
       case 'orm':
         {
-          $fqcn = 'BIT\\BITSocialUserBundle\\Entity\\User';
+          $fqcn = 'BIT\\SocialUserBundle\\Entity\\User';
           break;
         }
       case 'mongodb':
         {
-          $fqcn = 'BIT\\BITSocialUserBundle\\Document\\User';
+          $fqcn = 'BIT\\SocialUserBundle\\Document\\User';
           break;
         }
     }
