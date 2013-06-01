@@ -1,4 +1,4 @@
 BITSecurityBundle:
-    pattern:  /check_login
+    pattern:  /login_check
     defaults: { _controller: BITSocialUserBundle:SocialUser:check }
     methods: [GET]
