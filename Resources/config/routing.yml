@@ -1,4 +1,4 @@
 BITSecurityBundle:
-    resource: "@BITSocialUserBundle/Controller/"
-    type:     annotation
-    prefix: /security
+    pattern:  /check_login
+    defaults: { _controller: BITSocialUserBundle:SocialUser:check }
+    methods: [GET]
