@@ -1,16 +1,9 @@
 <?php
 
 namespace BIT\SocialUserBundle\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use JMS\SecurityExtraBundle\Annotation\Secure;
-use BIT\SocialUserBundle\Entity\User;
-use BIT\UserBundle\Form\EmailType;
-use BIT\UserBundle\Form\ProfileType;
 
 class SocialUserController extends Controller
 {
@@ -34,6 +27,6 @@ class SocialUserController extends Controller
   
   public function checkAction( )
   {
-    
+    return new Response('');
   }
 }
