@@ -17,7 +17,7 @@ class BITSocialUserExtension extends Extension
     $config = $processor->processConfiguration( $configuration, $configs );
     
     // set as array
-    $container->setParameter( 'bit_social_user.functionNames', $config["function_names"] );
+    $container->setParameter( 'bit_social_user.functionsName', $config["functions_name"] );
     $container->setParameter( 'bit_social_user.defaultGroup', $config["default_group"] );
     $container->setParameter( 'bit_social_user.setGroupAsSocialName', $config["set_group_as_social_name"] );
     

@@ -13,7 +13,7 @@ class Configuration implements ConfigurationInterface
     $rootNode = $treeBuilder->root( 'bit_social_user' );
     
     $rootNode->children( ) // childrens
-        ->arrayNode( 'function_name' )->canBeUnset( )->addDefaultsIfNotSet()->children( ) // childrens
+        ->arrayNode( 'functions_name' )->canBeUnset( )->addDefaultsIfNotSet()->children( ) // childrens
         ->scalarNode( 'name' )->cannotBeEmpty( )->defaultValue( 'setFirstname' )->end( ) // first name
         ->scalarNode( 'lastname' )->cannotBeEmpty( )->defaultValue( 'setLastname' )->end( ) // last name
         ->scalarNode( 'lastname2' )->cannotBeEmpty( )->defaultValue( 'setLastname2' )->end( ) // last name 2

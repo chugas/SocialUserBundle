@@ -2,7 +2,7 @@ services:
   bit_social_user:
     class: BIT\SocialUserBundle\Controller\SocialUserControllerService
     arguments:
-          functionNames: %bit_social_user.functionNames%
+          functionsName: %bit_social_user.functionsName%
           defaultGroup: %bit_social_user.defaultGroup%
           setGroupAsSocialName: %bit_social_user.setGroupAsSocialName%
     calls:
