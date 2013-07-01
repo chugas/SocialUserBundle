@@ -14,6 +14,7 @@ abstract class SocialUserProvider implements UserProviderInterface
   protected $validator;
   protected $em;
   protected $providerName;
+  protected $groupRepository;
   
   public function __construct( Validator $validator, UserManager $userManager,
       SocialUserControllerService $socialUserManager )
@@ -23,6 +24,7 @@ abstract class SocialUserProvider implements UserProviderInterface
     $this->socialUserManager = $socialUserManager;
     $this->objectManager = $this->socialUserManager->getObjectManager( );
     $this->providerName = '';
+    $this->groupRepository = $this->objectManager->getRepository( "BITUserBundle:Group" );
   }
   
   public function supportsClass( $class )
@@ -61,9 +63,8 @@ abstract class SocialUserProvider implements UserProviderInterface
         $user = $this->userManager->createUser( );
         $user->setPassword( '' );
         $user->setEnabled( true );
-        $user
-            ->addGroup( 
-                $this->objectManager->getRepository( "BITUserBundle:Group" )->findOneBy( array( "name" => "USER" ) ) );
+        $defaultGroup = $this->groupRepository->findOneBy( array( "name" => "USER" ) );
+        $user->addGroup( $defaultGroup );
       }
       
       $name = $data[ 'name' ];
@@ -96,6 +97,9 @@ abstract class SocialUserProvider implements UserProviderInterface
         $user->setUsername( '' );
       }
       
+      print_r($data);
+      die();
+      
       if ( count( $this->validator->validate( $user, $this->providerName ) ) )
       {
         // TODO: the user was found obviously, but doesnt match our expectations, do something smart
@@ -113,10 +117,8 @@ abstract class SocialUserProvider implements UserProviderInterface
         $socialUser->setSocialId( $data[ 'id' ] );
         $socialUser->setUser( $user );
         $socialUser->setSocialName( strtoupper( $this->providerName ) );
-        $user
-            ->addGroup( 
-                $this->objectManager->getRepository( "BITUserBundle:Group" )
-                    ->findOneBy( array( "name" => strtoupper( $this->providerName ) ) ) );
+        $socialGroup = $this->groupRepository->findOneBy( array( "name" => strtoupper( $this->providerName ) ) );
+        $user->addGroup( $socialGroup );
         $this->objectManager->persist( $socialUser );
         $this->objectManager->flush( );
       }
@@ -133,17 +135,15 @@ abstract class SocialUserProvider implements UserProviderInterface
   public function refreshUser( UserInterface $user )
   {
     if ( !$this->supportsClass( get_class( $user ) ) )
-    {
       throw new UnsupportedUserException( sprintf( 'Instances of "%s" are not supported.', get_class( $user ) ));
-    }
     
-    $entity = $this->objectManager->getRepository( "BITSocialUserBundle:User" )
-        ->findOneBy( array( "user" => $user->getId( ), "social_name" => "TWITTER" ) );
+    $userRepository = $this->objectManager->getRepository( "BITSocialUserBundle:User" );
+    $entity = $userRepository->findOneBy( array( "user" => $user->getId( ), "social_name" => $this->providerName ) );
     
     if ( !is_object( $entity ) )
     {
-      throw new UnsupportedUserException( 
-          sprintf( 'Instances of "%s" are not %s.', get_class( $user ), $this->providerName ));
+      $message = sprintf( 'Instances of "%s" are not %s.', get_class( $user ), $this->providerName );
+      throw new UnsupportedUserException( $message);
     }
     
     return $entity->getUser( );
