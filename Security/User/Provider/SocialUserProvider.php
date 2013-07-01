@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Doctrine\UserManager;
 use BIT\SocialUserBundle\Controller\SocialUserControllerService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class SocialUserProvider implements UserProviderInterface
 {
@@ -49,6 +50,30 @@ abstract class SocialUserProvider implements UserProviderInterface
   
   abstract protected function getData( );
   
+  private function setName( $user, $name, $lastname, $lastname2 )
+  {
+    $firstnameFunction = $this->socialUserManager->getFunctionName( "firstname" );
+    if ( !empty( $firstnameFunction ) )
+    {
+      $reflectionMethod = new \ReflectionMethod( get_class( $user ), $firstnameFunction);
+      $reflectionMethod->invoke( $user, $name );
+    }
+    
+    $lastnameFunction = $this->socialUserManager->getFunctionName( "lastname" );
+    if ( !empty( $lastnameFunction ) )
+    {
+      $reflectionMethod = new \ReflectionMethod( get_class( $user ), $lastnameFunction);
+      $reflectionMethod->invoke( $user, $lastname );
+    }
+    
+    $lastname2Function = $this->socialUserManager->getFunctionName( "lastname2" );
+    if ( !empty( $lastname2Function ) )
+    {
+      $reflectionMethod = new \ReflectionMethod( get_class( $user ), $lastname2Function);
+      $reflectionMethod->invoke( $user, $lastname2 );
+    }
+  }
+  
   public function loadUserByUsername( $username )
   {
     $data = $this->getData( );
@@ -63,7 +88,8 @@ abstract class SocialUserProvider implements UserProviderInterface
         $user = $this->userManager->createUser( );
         $user->setPassword( '' );
         $user->setEnabled( true );
-        $defaultGroup = $this->groupRepository->findOneBy( array( "name" => "USER" ) );
+        $defaultGroupName = $this->socialUserManager->getDefaultGroup( );
+        $defaultGroup = $this->groupRepository->findOneBy( array( "name" => $defaultGroupName ) );
         $user->addGroup( $defaultGroup );
       }
       
@@ -71,34 +97,41 @@ abstract class SocialUserProvider implements UserProviderInterface
       if ( isset( $name ) )
       {
         $nameAndLastNames = explode( " ", $name );
+        $firstname = $nameAndLastNames[ 0 ];
+        $lastname = "";
+        $lastname2 = "";
         
         if ( count( $nameAndLastNames ) > 1 )
-        {
-          $user->setFirstname( $nameAndLastNames[ 0 ] );
-          $user->setLastname( $nameAndLastNames[ 1 ] );
-          $user->setLastname2( ( count( $nameAndLastNames ) > 2 ) ? $nameAndLastNames[ 2 ] : "" );
-        }
-        else
-        {
-          $user->setFirstname( $nameAndLastNames[ 0 ] );
-          $user->setLastname( "" );
-          $user->setLastname2( "" );
-        }
+          $lastname = $nameAndLastNames[ 1 ];
+        
+        if ( count( $nameAndLastNames ) > 2 )
+          $lastname2 = $nameAndLastNames[ 2 ];
+        
+        $this->setName( $user, $name, $lastname, $lastname2 );
       }
       
       if ( isset( $email ) )
       {
-        $user->setEmail( $email );
-        $user->setUsername( $email );
+        $emailFunction = $this->socialUserManager->getFunctionName( "email" );
+        $reflectionMethod = new \ReflectionMethod( get_class( $user ), $emailFunction);
+        $reflectionMethod->invoke( $user, $email );
+        
+        $usernameFunction = $this->socialUserManager->getFunctionName( "username" );
+        $reflectionMethod = new \ReflectionMethod( get_class( $user ), $usernameFunction);
+        $reflectionMethod->invoke( $user, $email );
       }
       else
       {
-        $user->setEmail( '' );
-        $user->setUsername( '' );
+        throw new NotFoundHttpException( "the user dont have email");
       }
       
-      print_r($data);
-      die();
+      $photo = $data[ 'photo' ];
+      if ( isset( $photo ) )
+      {
+        $photoFunction = $this->socialUserManager->getFunctionName( "photo" );
+        $reflectionMethod = new \ReflectionMethod( get_class( $user ), $photoFunction);
+        $reflectionMethod->invoke( $user, $photo );
+      }
       
       if ( count( $this->validator->validate( $user, $this->providerName ) ) )
       {
@@ -108,8 +141,8 @@ abstract class SocialUserProvider implements UserProviderInterface
       
       $this->userManager->updateUser( $user );
       
-      $socialUser = $this->objectManager->getRepository( "BITSocialUserBundle:User" )
-          ->findOneBy( array( "social_id" => $data[ 'id' ] ) );
+      $socialUserRepository = $this->objectManager->getRepository( "BITSocialUserBundle:User" );
+      $socialUser = $socialUserRepository->findOneBy( array( "social_id" => $data[ 'id' ] ) );
       
       if ( !is_object( $socialUser ) )
       {
@@ -117,17 +150,20 @@ abstract class SocialUserProvider implements UserProviderInterface
         $socialUser->setSocialId( $data[ 'id' ] );
         $socialUser->setUser( $user );
         $socialUser->setSocialName( strtoupper( $this->providerName ) );
-        $socialGroup = $this->groupRepository->findOneBy( array( "name" => strtoupper( $this->providerName ) ) );
-        $user->addGroup( $socialGroup );
+        
+        if ( $this->socialUserManager->getSetGroupAsSocialName( ) )
+        {
+          $socialGroup = $this->groupRepository->findOneBy( array( "name" => strtoupper( $this->providerName ) ) );
+          $user->addGroup( $socialGroup );
+        }
+        
         $this->objectManager->persist( $socialUser );
         $this->objectManager->flush( );
       }
     }
     
     if ( empty( $user ) )
-    {
-      throw new UsernameNotFoundException( sprintf( 'The user is not authenticated on google', $this->providerName ));
-    }
+      throw new UsernameNotFoundException( sprintf( 'The user is not authenticated on ', $this->providerName ));
     
     return $user;
   }

@@ -2,11 +2,39 @@
 
 namespace BIT\SocialUserBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use BIT\SocialUserBundle\Form\EmailType;
-use BIT\SocialUserBundle\Form\MongoEmailType;
 
 class SocialUserControllerService extends Controller
 {
+  private $functionName;
+  private $defaultGroup;
+  private $setGroupAsSocialName;
+  
+  public function __construct(Array $functionsName, $defaultGroup, $setGroupAsSocialName)
+  {
+    $this->functionsName = $functionsName;
+    $this->defaultGroup = $defaultGroup;
+    $this->setGroupAsSocialName = $setGroupAsSocialName;
+  }
+  
+  public function getFunctionsName()
+  {
+    return $this->functionsName;
+  }
+  
+  public function getFunctionName($name)
+  {
+    return $this->functionsName[$name];
+  }
+  
+  public function getDefaultGroup()
+  {
+    return $this->defaultGroup;
+  }
+  
+  public function getSetGroupAsSocialName()
+  {
+    return $this->setGroupAsSocialName;
+  }
   
   public function create( )
   {
@@ -47,20 +75,5 @@ class SocialUserControllerService extends Controller
   public function getRepository( )
   {
     return $this->getObjectManager( )->getRepository( "BITSocialUserBundle:User" );
-  }
-  
-  public function getType( )
-  {
-    switch ( $this->container->getParameter( 'fos_user.storage' ) )
-    {
-      case 'orm':
-        {
-          return new EmailType( );
-        }
-      case 'mongodb':
-        {
-          return new MongoEmailType( );
-        }
-    }
   }
 }
