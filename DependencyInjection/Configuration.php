@@ -14,7 +14,7 @@ class Configuration implements ConfigurationInterface
     
     $rootNode->children( ) // childrens
         ->arrayNode( 'functions_name' )->canBeUnset( )->addDefaultsIfNotSet()->children( ) // childrens
-        ->scalarNode( 'name' )->cannotBeEmpty( )->defaultValue( 'setFirstname' )->end( ) // first name
+        ->scalarNode( 'firstname' )->cannotBeEmpty( )->defaultValue( 'setFirstname' )->end( ) // first name
         ->scalarNode( 'lastname' )->cannotBeEmpty( )->defaultValue( 'setLastname' )->end( ) // last name
         ->scalarNode( 'lastname2' )->defaultValue( 'setLastname2' )->end( ) // last name 2
         ->scalarNode( 'email' )->cannotBeEmpty( )->defaultValue( 'setEmail' )->end( ) // email
