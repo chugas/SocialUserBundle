@@ -37,4 +37,10 @@ class GoogleProvider extends SocialUserProvider
     
     return $data;
   }
+  
+  protected function setPhoto( $data )
+  {
+    $reflectionMethod = new \ReflectionMethod( get_class( $user ), $photoFunction);
+    $reflectionMethod->invoke( $user, $data[ 'picture' ] );
+  }
 }

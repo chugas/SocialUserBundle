@@ -31,8 +31,9 @@ class TwitterProvider extends SocialUserProvider
   
   protected function getData( )
   {
-    $this->twitter_oauth
-        ->setOAuthToken( $this->session->get( 'access_token' ), $this->session->get( 'access_token_secret' ) );
+    $accessToken = $this->session->get( 'access_token' );
+    $accessTokenSecret = $this->session->get( 'access_token_secret' );
+    $this->twitter_oauth->setOAuthToken( $accessToken, $accessTokenSecret );
     
     try
     {
@@ -49,5 +50,16 @@ class TwitterProvider extends SocialUserProvider
     $data[ 'name' ] = $info->name;
     
     return $data;
+  }
+  
+  protected function setPhoto( $data )
+  {
+    $photo = $data[ 'picture' ];
+    if ( isset( $photo ) )
+    {
+      $photoFunction = $this->socialUserManager->getFunctionName( "photo" );
+      $reflectionMethod = new \ReflectionMethod( get_class( $user ), $photoFunction);
+      $reflectionMethod->invoke( $user, $photo );
+    }
   }
 }

@@ -125,13 +125,9 @@ abstract class SocialUserProvider implements UserProviderInterface
         throw new NotFoundHttpException( "the user dont have email");
       }
       
-      $photo = $data[ 'photo' ];
-      if ( isset( $photo ) )
-      {
-        $photoFunction = $this->socialUserManager->getFunctionName( "photo" );
-        $reflectionMethod = new \ReflectionMethod( get_class( $user ), $photoFunction);
-        $reflectionMethod->invoke( $user, $photo );
-      }
+      $photoFunction = $this->socialUserManager->getFunctionName( "photo" );
+      if ( !empty( $photoFunction ) )
+        $this->setPhoto( $data );
       
       if ( count( $this->validator->validate( $user, $this->providerName ) ) )
       {
