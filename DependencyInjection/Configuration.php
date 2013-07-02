@@ -13,7 +13,7 @@ class Configuration implements ConfigurationInterface
     $rootNode = $treeBuilder->root( 'bit_social_user' );
     
     $rootNode->children( ) // childrens
-        ->arrayNode( 'functions_name' )->canBeUnset( )->addDefaultsIfNotSet()->children( ) // childrens
+        ->arrayNode( 'functions_name' )->canBeUnset( )->addDefaultsIfNotSet( )->children( ) // childrens
         ->scalarNode( 'firstname' )->cannotBeEmpty( )->defaultValue( 'setFirstname' )->end( ) // first name
         ->scalarNode( 'lastname' )->cannotBeEmpty( )->defaultValue( 'setLastname' )->end( ) // last name
         ->scalarNode( 'lastname2' )->defaultValue( 'setLastname2' )->end( ) // last name 2
@@ -21,9 +21,10 @@ class Configuration implements ConfigurationInterface
         ->scalarNode( 'username' )->cannotBeEmpty( )->defaultValue( 'setUsername' )->end( ) // username
         ->scalarNode( 'photo' )->defaultValue( 'setPhoto' )->end( ) // photo
         ->end( )->end( ) // end array
+        ->variableNode( 'default_values' )->end( ) // default values
         ->scalarNode( 'default_group' )->cannotBeEmpty( )->defaultValue( 'USER' )->end( ) // default group
         ->booleanNode( 'set_group_as_social_name' )->cannotBeEmpty( )->defaultValue( true )->end( ) // group as social name
-        ->scalarNode( 'mapping_fqcn' )->defaultNull()->end( ) // photo
+        ->scalarNode( 'mapping_fqcn' )->defaultNull( )->end( ) // photo
         ->end( );
     
     return $treeBuilder;

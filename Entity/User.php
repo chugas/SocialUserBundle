@@ -30,7 +30,7 @@ class User
   
   public function setSocialId( $socialId )
   {
-    $this->$social_id = $socialId;
+    $this->social_id = $socialId;
   }
   
   public function getSocialId( )

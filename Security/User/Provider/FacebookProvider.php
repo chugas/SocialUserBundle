@@ -4,7 +4,8 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
-use FOS\UserBundle\Doctrine\UserManager;
+use FOS\UserBundle\Model\UserManager;
+use FOS\UserBundle\Model\GroupManager;
 use BIT\SocialUserBundle\Controller\SocialUserControllerService;
 use BIT\SocialUserBundle\Security\User\Provider\SocialUserProvider;
 use \BaseFacebook;
@@ -18,30 +19,48 @@ class FacebookProvider extends SocialUserProvider
   protected $facebook;
   
   public function __construct( BaseFacebook $facebook, Validator $validator, UserManager $userManager,
-      SocialUserControllerService $socialUserManager )
+      GroupManager $groupManager, SocialUserControllerService $socialUserManager )
   {
-    parent::__construct( $validator, $userManager, $socialUserManager );
+    parent::__construct( $validator, $userManager, $groupManager, $socialUserManager );
     $this->facebook = $facebook;
     $this->providerName = "Facebook";
   }
   
   protected function getData( )
   {
+    $data = array( );
+    
     try
     {
-      $data = $this->facebook->api( '/me' );
+      $fData = $this->facebook->api( '/me' );
     }
     catch ( FacebookApiException $e )
     {
-      $data = null;
+      return $data;
     }
     
+    $data[ 'id' ] = $fData[ 'id' ];
+    
+    if ( isset( $fData[ 'name' ] ) )
+    {
+      $nameAndLastNames = explode( " ", $fData[ 'name' ] );
+      $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
+      
+      if ( count( $nameAndLastNames ) > 1 )
+        $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
+      
+      if ( count( $nameAndLastNames ) > 2 )
+        $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
+    }
+    
+    if ( isset( $fData[ 'email' ] ) )
+    {
+      $data[ 'email' ] = $fData[ 'email' ];
+      $data[ 'username' ] = $fData[ 'email' ];
+    }
+    
+    $data[ 'photo' ] = "https://graph.facebook.com/" . $data[ "id" ] . "/picture";
+    
     return $data;
-  }
-  
-  protected function setPhoto( $photoFunction, $user, $data )
-  {
-    $reflectionMethod = new \ReflectionMethod( get_class( $user ), $photoFunction);
-    $reflectionMethod->invoke( $user, "https://graph.facebook.com/" . $data[ "id" ] . "/picture" );
   }
 }

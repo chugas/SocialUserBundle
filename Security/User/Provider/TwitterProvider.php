@@ -6,7 +6,8 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Validator;
-use FOS\UserBundle\Doctrine\UserManager;
+use FOS\UserBundle\Model\UserManager;
+use FOS\UserBundle\Model\GroupManager;
 use BIT\SocialUserBundle\Controller\SocialUserControllerService;
 use BIT\SocialUserBundle\Security\User\Provider\SocialUserProvider;
 use BIT\SocialUserBundle\Entity\User as SocialUser;
@@ -21,9 +22,9 @@ class TwitterProvider extends SocialUserProvider
   protected $session;
   
   public function __construct( TwitterOAuth $twitter_oauth, Validator $validator, Session $session,
-      UserManager $userManager, SocialUserControllerService $socialUserManager )
+      UserManager $userManager, GroupManager $groupManager, SocialUserControllerService $socialUserManager )
   {
-    parent::__construct( $validator, $userManager, $socialUserManager );
+    parent::__construct( $validator, $userManager, $groupManager, $socialUserManager );
     $this->session = $session;
     $this->twitter_oauth = $twitter_oauth;
     $this->providerName = "Twitter";
@@ -35,36 +36,39 @@ class TwitterProvider extends SocialUserProvider
     $accessTokenSecret = $this->session->get( 'access_token_secret' );
     $this->twitter_oauth->setOAuthToken( $accessToken, $accessTokenSecret );
     
+    $data = array( );
+    
     try
     {
-      $info = $this->twitter_oauth->get( 'account/verify_credentials' );
+      $tData = $this->twitter_oauth->get( 'account/verify_credentials' );
     }
     catch ( Exception $e )
     {
-      $info = null;
+      return $data;
     }
     
-    echo "<pre>";
-    print_r($info);
-    echo "</pre>";
-    die();
+    $data[ 'id' ] = strtolower( $tData->id );
     
-    $data = array( );
-    $data[ 'id' ] = strtolower( $info->id );
-    $data[ 'email' ] = sprintf( "%s@%s.com", $data[ 'id' ], strtolower( $this->providerName ) );
-    $data[ 'name' ] = $info->name;
+    if ( isset( $tData->name ) )
+    {
+      $nameAndLastNames = explode( " ", $tData->name );
+      $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
+      
+      if ( count( $nameAndLastNames ) > 1 )
+        $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
+      
+      if ( count( $nameAndLastNames ) > 2 )
+        $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
+    }
+    
+    if ( isset( $gData[ 'email' ] ) )
+    {
+      $data[ 'email' ] = sprintf( "%s@%s.com", $data[ 'id' ], strtolower( $this->providerName ) );
+      $data[ 'username' ] = $tData->username;
+    }
+    
+    $data[ 'photo' ] = "";
     
     return $data;
-  }
-  
-  protected function setPhoto( $photoFunction, $user, $data )
-  {
-    $photo = $data[ 'picture' ];
-    if ( isset( $photo ) )
-    {
-      $photoFunction = $this->socialUserManager->getFunctionName( "photo" );
-      $reflectionMethod = new \ReflectionMethod( get_class( $user ), $photoFunction);
-      $reflectionMethod->invoke( $user, $photo );
-    }
   }
 }

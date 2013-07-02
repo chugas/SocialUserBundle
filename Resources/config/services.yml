@@ -4,6 +4,7 @@ services:
     arguments:
           config:
               functionsName: %bit_social_user.functionsName%
+              defaultValues: %bit_social_user.defaultValues%
               defaultGroup: %bit_social_user.defaultGroup%
               setGroupAsSocialName: %bit_social_user.setGroupAsSocialName%
               mappingFQCN: %bit_social_user.mappingFQCN%
@@ -16,6 +17,7 @@ services:
           facebook: @fos_facebook.api
           validator: @validator
           userManager: @fos_user.user_manager
+          groupManager: @fos_user.group_manager
           socialUserManager: @bit_social_user
   twitter.user:
       class: BIT\SocialUserBundle\Security\User\Provider\TwitterProvider
@@ -24,6 +26,7 @@ services:
           validator: @validator
           session: @session
           userManager: @fos_user.user_manager
+          groupManager: @fos_user.group_manager
           socialUserManager: @bit_social_user
   google.user:
       class: BIT\SocialUserBundle\Security\User\Provider\GoogleProvider
@@ -31,4 +34,5 @@ services:
           google: @fos_google.api
           validator: @validator
           userManager: @fos_user.user_manager
+          groupManager: @fos_user.group_manager
           socialUserManager: @bit_social_user
