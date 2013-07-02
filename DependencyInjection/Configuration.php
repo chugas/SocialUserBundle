@@ -23,7 +23,7 @@ class Configuration implements ConfigurationInterface
         ->end( )->end( ) // end array
         ->scalarNode( 'default_group' )->cannotBeEmpty( )->defaultValue( 'USER' )->end( ) // default group
         ->booleanNode( 'set_group_as_social_name' )->cannotBeEmpty( )->defaultValue( true )->end( ) // group as social name
-        ->scalarNode( 'mapping_fqcn' )->end( ) // photo
+        ->scalarNode( 'mapping_fqcn' )->defaultNull()->end( ) // photo
         ->end( );
     
     return $treeBuilder;
