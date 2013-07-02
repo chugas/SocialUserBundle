@@ -8,51 +8,54 @@ class SocialUserControllerService extends Controller
   private $functionName;
   private $defaultGroup;
   private $setGroupAsSocialName;
+  private $mappingFQCN;
   
-  public function __construct(Array $functionsName, $defaultGroup, $setGroupAsSocialName)
+  public function __construct( $config )
   {
-    $this->functionsName = $functionsName;
-    $this->defaultGroup = $defaultGroup;
-    $this->setGroupAsSocialName = $setGroupAsSocialName;
+    $this->functionsName = $config[ 'functionsName' ];
+    $this->defaultGroup = $config[ 'defaultGroup' ];
+    $this->setGroupAsSocialName = $config[ 'setGroupAsSocialName' ];
+    $this->mappingFQCN = $config[ 'mappingFQCN' ];
   }
   
-  public function getFunctionsName()
+  public function getFunctionsName( )
   {
     return $this->functionsName;
   }
   
-  public function getFunctionName($name)
+  public function getFunctionName( $name )
   {
-    return $this->functionsName[$name];
+    return $this->functionsName[ $name ];
   }
   
-  public function getDefaultGroup()
+  public function getDefaultGroup( )
   {
     return $this->defaultGroup;
   }
   
-  public function getSetGroupAsSocialName()
+  public function getSetGroupAsSocialName( )
   {
     return $this->setGroupAsSocialName;
   }
   
   public function create( )
   {
-    switch ( $this->container->getParameter( 'fos_user.storage' ) )
-    {
-      case 'orm':
-        {
-          $fqcn = 'BIT\\SocialUserBundle\\Entity\\User';
-          break;
-        }
-      case 'mongodb':
-        {
-          $fqcn = 'BIT\\SocialUserBundle\\Document\\User';
-          break;
-        }
-    }
+    if ( empty( $this->mappingClassFQCN ) )
+      switch ( $this->container->getParameter( 'fos_user.storage' ) )
+      {
+        case 'orm':
+          {
+            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Entity\\User';
+            break;
+          }
+        case 'mongodb':
+          {
+            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Document\\User';
+            break;
+          }
+      }
     
-    return new $fqcn( );
+    return new $this->mappingFQCN;
   }
   
   public function getObjectManager( )
