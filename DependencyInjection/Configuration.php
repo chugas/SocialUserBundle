@@ -22,8 +22,8 @@ class Configuration implements ConfigurationInterface
         ->scalarNode( 'photo' )->defaultValue( 'setPhoto' )->end( ) // photo
         ->end( )->end( ) // end array
         ->variableNode( 'default_values' )->end( ) // default values
-        ->scalarNode( 'default_group' )->cannotBeEmpty( )->defaultValue( 'USER' )->end( ) // default group
-        ->booleanNode( 'set_group_as_social_name' )->cannotBeEmpty( )->defaultValue( true )->end( ) // group as social name
+        ->scalarNode( 'default_role' )->cannotBeEmpty( )->defaultValue( 'ROLE_USER' )->end( ) // default group
+        ->booleanNode( 'set_role_as_social_name' )->cannotBeEmpty( )->defaultValue( true )->end( ) // group as social name
         ->scalarNode( 'mapping_fqcn' )->defaultNull( )->end( ) // photo
         ->end( );
     

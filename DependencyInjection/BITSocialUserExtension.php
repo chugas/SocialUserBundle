@@ -20,8 +20,8 @@ class BITSocialUserExtension extends Extension
     
     $container->setParameter( 'bit_social_user.functionsName', $config[ "functions_name" ] );
     $container->setParameter( 'bit_social_user.defaultValues', $defaults );
-    $container->setParameter( 'bit_social_user.defaultGroup', $config[ "default_group" ] );
-    $container->setParameter( 'bit_social_user.setGroupAsSocialName', $config[ "set_group_as_social_name" ] );
+    $container->setParameter( 'bit_social_user.defaultRole', $config[ "default_role" ] );
+    $container->setParameter( 'bit_social_user.setRoleAsSocialName', $config[ "set_role_as_social_name" ] );
     $container->setParameter( 'bit_social_user.mappingFQCN', $config[ "mapping_fqcn" ] );
     
     $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../Resources/config'));

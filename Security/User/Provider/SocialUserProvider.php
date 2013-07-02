@@ -59,10 +59,8 @@ abstract class SocialUserProvider implements UserProviderInterface
     $user->setPassword( '' );
     $user->setEnabled( true );
     
-    // set default group
-    $defaultGroupName = $this->socialUserManager->getDefaultGroup( );
-    $defaultGroup = $this->groupManager->findGroupByName( $defaultGroupName );
-    $user->addGroup( $defaultGroup );
+    // set default
+    $user->addRole( $this->socialUserManager->getDefaultRole( ) );
     
     return $user;
   }
@@ -111,15 +109,14 @@ abstract class SocialUserProvider implements UserProviderInterface
       $socialUser->setUser( $user );
       $socialUser->setSocialName( strtoupper( $this->providerName ) );
       
-      if ( $this->socialUserManager->getSetGroupAsSocialName( ) )
-      {
-        $socialGroup = $this->groupManager->findGroupByName( strtoupper( $this->providerName ) );
-        $user->addGroup( $socialGroup );
-      }
+      if ( $this->socialUserManager->getSetRoleAsSocialName( ) )
+        $user->addRole( "ROLE_" . strtoupper( $this->providerName ) );
       
       $this->objectManager->persist( $socialUser );
       $this->objectManager->flush( );
     }
+    
+    return $user;
   }
   
   public function loadUserByUsername( $username )
@@ -136,7 +133,8 @@ abstract class SocialUserProvider implements UserProviderInterface
         throw new UsernameNotFoundException( sprintf( 'The %s user could not be stored', $this->providerName ));
       
       $this->userManager->updateUser( $user );
-      $this->createSocialUser( $user, $data );
+      $user = $this->createSocialUser( $user, $data );
+      $this->userManager->updateUser( $user );
     }
     
     if ( empty( $user ) )

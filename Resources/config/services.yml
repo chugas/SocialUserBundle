@@ -5,8 +5,8 @@ services:
           config:
               functionsName: %bit_social_user.functionsName%
               defaultValues: %bit_social_user.defaultValues%
-              defaultGroup: %bit_social_user.defaultGroup%
-              setGroupAsSocialName: %bit_social_user.setGroupAsSocialName%
+              defaultRole: %bit_social_user.defaultRole%
+              setRoleAsSocialName: %bit_social_user.setRoleAsSocialName%
               mappingFQCN: %bit_social_user.mappingFQCN%
     calls:
       - [ setContainer, [ @service_container ] ]

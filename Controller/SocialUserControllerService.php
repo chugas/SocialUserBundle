@@ -7,8 +7,8 @@ class SocialUserControllerService extends Controller
 {
   private $functionName;
   private $defaultValues;
-  private $defaultGroup;
-  private $setGroupAsSocialName;
+  private $defaultRole;
+  private $setRoleAsSocialName;
   private $mappingFQCN;
   private $mappingBundle;
   private $mappingClass;
@@ -33,8 +33,8 @@ class SocialUserControllerService extends Controller
   {
     $this->functionsName = $config[ 'functionsName' ];
     $this->defaultValues = $config[ 'defaultValues' ];
-    $this->defaultGroup = $config[ 'defaultGroup' ];
-    $this->setGroupAsSocialName = $config[ 'setGroupAsSocialName' ];
+    $this->defaultRole = $config[ 'defaultRole' ];
+    $this->setRoleAsSocialName = $config[ 'setRoleAsSocialName' ];
     $this->mappingFQCN = $config[ 'mappingFQCN' ];
     
     $this->computeMappingNames( );
@@ -55,14 +55,14 @@ class SocialUserControllerService extends Controller
     return $this->defaultValues;
   }
   
-  public function getDefaultGroup( )
+  public function getDefaultRole( )
   {
-    return $this->defaultGroup;
+    return $this->defaultRole;
   }
   
-  public function getSetGroupAsSocialName( )
+  public function getSetRoleAsSocialName( )
   {
-    return $this->setGroupAsSocialName;
+    return $this->setRoleAsSocialName;
   }
   
   public function create( )
