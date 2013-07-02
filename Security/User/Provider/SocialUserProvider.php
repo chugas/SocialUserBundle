@@ -128,7 +128,7 @@ abstract class SocialUserProvider implements UserProviderInterface
       
       $photoFunction = $this->socialUserManager->getFunctionName( "photo" );
       if ( !empty( $photoFunction ) )
-        $this->setPhoto( $data );
+        $this->setPhoto( $user, $data );
       
       if ( count( $this->validator->validate( $user, $this->providerName ) ) )
       {
