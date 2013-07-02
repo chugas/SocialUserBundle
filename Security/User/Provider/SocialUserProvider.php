@@ -49,7 +49,7 @@ abstract class SocialUserProvider implements UserProviderInterface
   }
   
   abstract protected function getData( );
-  abstract protected function setPhoto( $user, $data );
+  abstract protected function setPhoto( $photoFunction, $user, $data );
   
   private function setName( $user, $name, $lastname, $lastname2 )
   {
@@ -128,7 +128,7 @@ abstract class SocialUserProvider implements UserProviderInterface
       
       $photoFunction = $this->socialUserManager->getFunctionName( "photo" );
       if ( !empty( $photoFunction ) )
-        $this->setPhoto( $user, $data );
+        $this->setPhoto( $photoFunction, $user, $data );
       
       if ( count( $this->validator->validate( $user, $this->providerName ) ) )
       {

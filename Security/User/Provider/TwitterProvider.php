@@ -57,7 +57,7 @@ class TwitterProvider extends SocialUserProvider
     return $data;
   }
   
-  protected function setPhoto( $user, $data )
+  protected function setPhoto( $photoFunction, $user, $data )
   {
     $photo = $data[ 'picture' ];
     if ( isset( $photo ) )
