@@ -7,7 +7,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Model\UserManager;
-use FOS\UserBundle\Model\GroupManager;
 use BIT\SocialUserBundle\Controller\SocialUserControllerService;
 use BIT\SocialUserBundle\Security\User\Provider\SocialUserProvider;
 use BIT\SocialUserBundle\Entity\User as SocialUser;
@@ -22,9 +21,9 @@ class TwitterProvider extends SocialUserProvider
   protected $session;
   
   public function __construct( TwitterOAuth $twitter_oauth, Validator $validator, Session $session,
-      UserManager $userManager, GroupManager $groupManager, SocialUserControllerService $socialUserManager )
+      UserManager $userManager, SocialUserControllerService $socialUserManager )
   {
-    parent::__construct( $validator, $userManager, $groupManager, $socialUserManager );
+    parent::__construct( $validator, $userManager, $socialUserManager );
     $this->session = $session;
     $this->twitter_oauth = $twitter_oauth;
     $this->providerName = "Twitter";

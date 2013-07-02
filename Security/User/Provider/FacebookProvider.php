@@ -5,7 +5,6 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Model\UserManager;
-use FOS\UserBundle\Model\GroupManager;
 use BIT\SocialUserBundle\Controller\SocialUserControllerService;
 use BIT\SocialUserBundle\Security\User\Provider\SocialUserProvider;
 use \BaseFacebook;
@@ -19,9 +18,9 @@ class FacebookProvider extends SocialUserProvider
   protected $facebook;
   
   public function __construct( BaseFacebook $facebook, Validator $validator, UserManager $userManager,
-      GroupManager $groupManager, SocialUserControllerService $socialUserManager )
+      SocialUserControllerService $socialUserManager )
   {
-    parent::__construct( $validator, $userManager, $groupManager, $socialUserManager );
+    parent::__construct( $validator, $userManager, $socialUserManager );
     $this->facebook = $facebook;
     $this->providerName = "Facebook";
   }

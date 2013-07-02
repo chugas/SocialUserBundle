@@ -6,7 +6,6 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Model\UserManager;
-use FOS\UserBundle\Model\GroupManager;
 use BIT\SocialUserBundle\Controller\SocialUserControllerService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -14,19 +13,17 @@ abstract class SocialUserProvider implements UserProviderInterface
 {
   protected $objectManager;
   protected $userManager;
-  protected $groupManager;
   protected $socialUserManager;
   protected $validator;
   protected $providerName;
   
   abstract protected function getData( );
   
-  public function __construct( Validator $validator, UserManager $userManager, GroupManager $groupManager,
+  public function __construct( Validator $validator, UserManager $userManager,
       SocialUserControllerService $socialUserManager )
   {
     $this->objectManager = $socialUserManager->getObjectManager( );
     $this->userManager = $userManager;
-    $this->groupManager = $groupManager;
     $this->socialUserManager = $socialUserManager;
     $this->validator = $validator;
     $this->providerName = '';

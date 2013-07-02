@@ -17,7 +17,6 @@ services:
           facebook: @fos_facebook.api
           validator: @validator
           userManager: @fos_user.user_manager
-          groupManager: @fos_user.group_manager
           socialUserManager: @bit_social_user
   twitter.user:
       class: BIT\SocialUserBundle\Security\User\Provider\TwitterProvider
@@ -26,7 +25,6 @@ services:
           validator: @validator
           session: @session
           userManager: @fos_user.user_manager
-          groupManager: @fos_user.group_manager
           socialUserManager: @bit_social_user
   google.user:
       class: BIT\SocialUserBundle\Security\User\Provider\GoogleProvider
@@ -34,5 +32,4 @@ services:
           google: @fos_google.api
           validator: @validator
           userManager: @fos_user.user_manager
-          groupManager: @fos_user.group_manager
           socialUserManager: @bit_social_user

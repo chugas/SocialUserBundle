@@ -5,7 +5,6 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator;
 use FOS\UserBundle\Model\UserManager;
-use FOS\UserBundle\Model\GroupManager;
 use FOS\GoogleBundle\Google\GoogleSessionPersistence;
 use BIT\SocialUserBundle\Controller\SocialUserControllerService;
 use BIT\SocialUserBundle\Security\User\Provider\SocialUserProvider;
@@ -18,9 +17,9 @@ class GoogleProvider extends SocialUserProvider
   protected $googleApi;
   
   public function __construct( GoogleSessionPersistence $googleApi, Validator $validator, UserManager $userManager,
-      GroupManager $groupManager, SocialUserControllerService $socialUserManager )
+      SocialUserControllerService $socialUserManager )
   {
-    parent::__construct( $validator, $userManager, $groupManager, $socialUserManager );
+    parent::__construct( $validator, $userManager, $socialUserManager );
     $this->googleApi = $googleApi;
     $this->providerName = "Google";
   }
