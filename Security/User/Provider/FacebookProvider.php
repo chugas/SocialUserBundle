@@ -39,7 +39,7 @@ class FacebookProvider extends SocialUserProvider
     return $data;
   }
   
-  protected function setPhoto( $data )
+  protected function setPhoto( $user, $data )
   {
     $reflectionMethod = new \ReflectionMethod( get_class( $user ), $photoFunction);
     $reflectionMethod->invoke( $user, "https://graph.facebook.com/" . $data[ "id" ] . "/picture" );

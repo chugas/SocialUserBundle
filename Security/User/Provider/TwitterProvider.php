@@ -44,6 +44,11 @@ class TwitterProvider extends SocialUserProvider
       $info = null;
     }
     
+    echo "<pre>";
+    print_r($info);
+    echo "</pre>";
+    die();
+    
     $data = array( );
     $data[ 'id' ] = strtolower( $info->id );
     $data[ 'email' ] = sprintf( "%s@%s.com", $data[ 'id' ], strtolower( $this->providerName ) );
@@ -52,7 +57,7 @@ class TwitterProvider extends SocialUserProvider
     return $data;
   }
   
-  protected function setPhoto( $data )
+  protected function setPhoto( $user, $data )
   {
     $photo = $data[ 'picture' ];
     if ( isset( $photo ) )

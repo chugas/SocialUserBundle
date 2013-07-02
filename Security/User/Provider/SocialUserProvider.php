@@ -49,6 +49,7 @@ abstract class SocialUserProvider implements UserProviderInterface
   }
   
   abstract protected function getData( );
+  abstract protected function setPhoto( $user, $data );
   
   private function setName( $user, $name, $lastname, $lastname2 )
   {
