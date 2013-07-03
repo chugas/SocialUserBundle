@@ -74,9 +74,9 @@ abstract class SocialUserProvider implements UserProviderInterface
   
   private function setupUser( $user, $data )
   {
-    foreach ( $this->socialUserManager->getFunctionsName( ) as $functionName => $handler )
+    foreach ( $this->socialUserManager->getFunctionsName( ) as $property => $handler )
     {
-      $currentData = $data[ $functionName ];
+      $currentData = $data[ $property ];
       if ( !empty( $handler ) && !empty( $currentData ) )
       {
         $reflectionMethod = new \ReflectionMethod( get_class( $user ), $handler);
