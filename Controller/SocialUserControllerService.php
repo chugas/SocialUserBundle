@@ -15,8 +15,24 @@ class SocialUserControllerService extends Controller
   
   private function computeMappingNames( )
   {
+    if ( empty( $this->mappingFQCN ) )
+      switch ( $this->container->getParameter( 'fos_user.storage' ) )
+      {
+        case 'orm':
+          {
+            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Entity\\User';
+            break;
+          }
+        case 'mongodb':
+          {
+            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Document\\User';
+            break;
+          }
+      }
+    
     $data = explode( "#", str_replace( '\\', "#", $this->mappingFQCN ) );
     
+    $vendorName = "";
     foreach ( $data as $str )
     {
       if ( strpos( $str, "Bundle" ) )
@@ -24,6 +40,8 @@ class SocialUserControllerService extends Controller
         $this->mappingBundle = $str;
         break;
       }
+      else
+        $vendorName .= ucfirst( $str );
     }
     
     $this->mappingClass = $data[ count( $data ) - 1 ];
@@ -36,8 +54,6 @@ class SocialUserControllerService extends Controller
     $this->defaultRole = $config[ 'defaultRole' ];
     $this->setRoleAsSocialName = $config[ 'setRoleAsSocialName' ];
     $this->mappingFQCN = $config[ 'mappingFQCN' ];
-    
-    $this->computeMappingNames( );
   }
   
   public function getFunctionsName( )
@@ -67,20 +83,7 @@ class SocialUserControllerService extends Controller
   
   public function create( )
   {
-    if ( empty( $this->mappingFQCN ) )
-      switch ( $this->container->getParameter( 'fos_user.storage' ) )
-      {
-        case 'orm':
-          {
-            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Entity\\User';
-            break;
-          }
-        case 'mongodb':
-          {
-            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Document\\User';
-            break;
-          }
-      }
+    $this->computeMappingNames( );
     
     $fqcn = $this->mappingFQCN;
     return new $fqcn( );
@@ -105,6 +108,7 @@ class SocialUserControllerService extends Controller
   
   public function getRepository( )
   {
-    return $this->getObjectManager( )->getRepository( $this->mappingBundle . ":" . $this->mappingClass );
+    $this->computeMappingNames( );
+    return $this->getObjectManager( )->getRepository( "BITSocialUserBundle:User" );
   }
 }
