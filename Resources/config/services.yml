@@ -29,7 +29,7 @@ services:
   google.user:
       class: BIT\SocialUserBundle\Security\User\Provider\GoogleProvider
       arguments:
-          google: @fos_google.api
+          google: @bit_google.api
           validator: @validator
           userManager: @fos_user.user_manager
           socialUserManager: @bit_social_user
