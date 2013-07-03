@@ -14,22 +14,22 @@ services:
   facebook.user:
       class: BIT\SocialUserBundle\Security\User\Provider\FacebookProvider
       arguments:
-          facebook: @fos_facebook.api
+          facebook: @bit_facebook.api
           validator: @validator
-          userManager: @fos_user.user_manager
+          userManager: @bit_user.user_manager
           socialUserManager: @bit_social_user
   twitter.user:
       class: BIT\SocialUserBundle\Security\User\Provider\TwitterProvider
       arguments:
-          twitter_oauth: @fos_twitter.api
+          twitter_oauth: @bit_twitter.api
           validator: @validator
           session: @session
-          userManager: @fos_user.user_manager
+          userManager: @bit_user.user_manager
           socialUserManager: @bit_social_user
   google.user:
       class: BIT\SocialUserBundle\Security\User\Provider\GoogleProvider
       arguments:
           google: @bit_google.api
           validator: @validator
-          userManager: @fos_user.user_manager
+          userManager: @bit_user.user_manager
           socialUserManager: @bit_social_user
