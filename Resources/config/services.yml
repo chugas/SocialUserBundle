@@ -18,14 +18,6 @@ services:
           validator: @validator
           userManager: @fos_user.user_manager
           socialUserManager: @bit_social_user
-  twitter.user:
-      class: BIT\SocialUserBundle\Security\User\Provider\TwitterProvider
-      arguments:
-          twitter: @bit_twitter.api
-          validator: @validator
-          session: @session
-          userManager: @fos_user.user_manager
-          socialUserManager: @bit_social_user
   google.user:
       class: BIT\SocialUserBundle\Security\User\Provider\GoogleProvider
       arguments:
