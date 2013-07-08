@@ -21,7 +21,7 @@ services:
   twitter.user:
       class: BIT\SocialUserBundle\Security\User\Provider\TwitterProvider
       arguments:
-          twitter_oauth: @bit_twitter.api
+          twitter: @bit_twitter.api
           validator: @validator
           session: @session
           userManager: @fos_user.user_manager
