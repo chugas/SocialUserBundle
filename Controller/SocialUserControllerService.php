@@ -13,6 +13,15 @@ class SocialUserControllerService extends Controller
   private $mappingBundle;
   private $mappingClass;
   
+  public function __construct( $config )
+  {
+    $this->functionsName = $config[ 'functionsName' ];
+    $this->defaultValues = $config[ 'defaultValues' ];
+    $this->defaultRole = $config[ 'defaultRole' ];
+    $this->setRoleAsSocialName = $config[ 'setRoleAsSocialName' ];
+    $this->mappingFQCN = $config[ 'mappingFQCN' ];
+  }
+  
   private function computeMappingNames( )
   {
     if ( empty( $this->mappingFQCN ) )
@@ -45,15 +54,6 @@ class SocialUserControllerService extends Controller
     }
     
     $this->mappingClass = $data[ count( $data ) - 1 ];
-  }
-  
-  public function __construct( $config )
-  {
-    $this->functionsName = $config[ 'functionsName' ];
-    $this->defaultValues = $config[ 'defaultValues' ];
-    $this->defaultRole = $config[ 'defaultRole' ];
-    $this->setRoleAsSocialName = $config[ 'setRoleAsSocialName' ];
-    $this->mappingFQCN = $config[ 'mappingFQCN' ];
   }
   
   public function getFunctionsName( )
@@ -109,6 +109,6 @@ class SocialUserControllerService extends Controller
   public function getRepository( )
   {
     $this->computeMappingNames( );
-    return $this->getObjectManager( )->getRepository( "BITSocialUserBundle:User" );
+    return $this->getObjectManager( )->getRepository( $this->mappingBundle . ":" . $this->mappingClass );
   }
 }
