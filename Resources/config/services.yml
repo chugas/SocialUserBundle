@@ -2,34 +2,11 @@ services:
   bit_social_user:
     class: BIT\SocialUserBundle\Controller\SocialUserControllerService
     arguments:
-          config:
-              functionsName: %bit_social_user.functionsName%
-              defaultValues: %bit_social_user.defaultValues%
-              defaultRole: %bit_social_user.defaultRole%
-              setRoleAsSocialName: %bit_social_user.setRoleAsSocialName%
-              mappingFQCN: %bit_social_user.mappingFQCN%
+        config:
+          functionsName: %bit_social_user.functionsName%
+          defaultValues: %bit_social_user.defaultValues%
+          defaultRole: %bit_social_user.defaultRole%
+          setRoleAsSocialName: %bit_social_user.setRoleAsSocialName%
+          mappingFQCN: %bit_social_user.mappingFQCN%
     calls:
       - [ setContainer, [ @service_container ] ]
-        
-  facebook.user:
-      class: BIT\SocialUserBundle\Security\User\Provider\FacebookProvider
-      arguments:
-          facebook: @bit_facebook.api
-          validator: @validator
-          userManager: @fos_user.user_manager
-          socialUserManager: @bit_social_user
-  twitter.user:
-      class: BIT\SocialUserBundle\Security\User\Provider\TwitterProvider
-      arguments:
-          twitter_oauth: @bit_twitter.api
-          validator: @validator
-          session: @session
-          userManager: @fos_user.user_manager
-          socialUserManager: @bit_social_user
-  google.user:
-      class: BIT\SocialUserBundle\Security\User\Provider\GoogleProvider
-      arguments:
-          google: @bit_google.api
-          validator: @validator
-          userManager: @fos_user.user_manager
-          socialUserManager: @bit_social_user

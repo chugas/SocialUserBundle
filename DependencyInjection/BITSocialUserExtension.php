@@ -26,6 +26,15 @@ class BITSocialUserExtension extends Extension
     
     $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../Resources/config'));
     $loader->load( 'services.yml' );
+    
+    if ( $config[ 'use_google' ] )
+      $loader->load( 'google.yml' );
+    
+    if ( $config[ 'use_facebook' ] )
+      $loader->load( 'facebook.yml' );
+    
+    if ( $config[ 'use_twitter' ] )
+      $loader->load( 'twitter.yml' );
   }
   
   public function getAlias( )

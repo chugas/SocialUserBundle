@@ -24,7 +24,10 @@ class Configuration implements ConfigurationInterface
         ->variableNode( 'default_values' )->end( ) // default values
         ->scalarNode( 'default_role' )->cannotBeEmpty( )->defaultValue( 'ROLE_USER' )->end( ) // default group
         ->booleanNode( 'set_role_as_social_name' )->cannotBeEmpty( )->defaultValue( true )->end( ) // group as social name
-        ->scalarNode( 'mapping_fqcn' )->defaultNull( )->end( ) // photo
+        ->scalarNode( 'mapping_fqcn' )->defaultNull( )->end( ) // class fqcn
+        ->booleanNode( 'use_google' )->defaultTrue( )->end( ) // use google
+        ->booleanNode( 'use_facebook' )->defaultTrue( )->end( ) // use facebook
+        ->booleanNode( 'use_twitter' )->defaultTrue( )->end( ) // use twitter
         ->end( );
     
     return $treeBuilder;
