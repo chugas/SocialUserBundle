@@ -18,7 +18,7 @@
         "bitgandtter/user-bundle": ">=0.1",
         "bitgandtter/google-bundle": ">=0.1",
         "bitgandtter/facebook-bundle": ">=0.1",
-        "bitgandtter/twitter-bundle": ">=0.1",
+        "bitgandtter/twitter-bundle": ">=0.1"
     },
     "autoload": {
         "psr-0": { "BIT\\SocialUserBundle": "" }
