@@ -39,21 +39,24 @@ class SocialUserControllerService extends Controller
           }
       }
     
-    $data = explode( "#", str_replace( '\\', "#", $this->mappingFQCN ) );
-    
-    $vendorName = "";
-    foreach ( $data as $str )
+    if ( empty( $this->mappingBundle ) || empty( $this->mappingClass ) )
     {
-      if ( strpos( $str, "Bundle" ) )
+      $data = explode( "#", str_replace( '\\', "#", $this->mappingFQCN ) );
+      
+      $vendorName = "";
+      foreach ( $data as $str )
       {
-        $this->mappingBundle = $str;
-        break;
+        if ( strpos( $str, "Bundle" ) )
+        {
+          $this->mappingBundle = $vendorName . $str;
+          break;
+        }
+        else
+          $vendorName .= ucfirst( $str );
       }
-      else
-        $vendorName .= ucfirst( $str );
+      
+      $this->mappingClass = $data[ count( $data ) - 1 ];
     }
-    
-    $this->mappingClass = $data[ count( $data ) - 1 ];
   }
   
   public function getFunctionsName( )
