@@ -30,7 +30,7 @@ class TwitterProvider extends SocialUserProvider
   }
   
   protected function getData( )
-  {    
+  {
     $data = array( );
     
     try
@@ -42,10 +42,10 @@ class TwitterProvider extends SocialUserProvider
       {
         $nameAndLastNames = explode( " ", $info->name );
         $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
-      
+        
         if ( count( $nameAndLastNames ) > 1 )
           $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
-      
+        
         if ( count( $nameAndLastNames ) > 2 )
           $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
       }
@@ -53,7 +53,14 @@ class TwitterProvider extends SocialUserProvider
       $data[ 'email' ] = sprintf( "%s@%s.com", $data[ 'id' ], strtolower( $this->providerName ) );
       $data[ 'username' ] = $info->screen_name;
       
-      $data[ 'photo' ] = $info->profile_image_url;
+      try
+      {
+        $data[ 'photo' ] = $info->profile_image_url;
+      }
+      catch ( Exception $e )
+      {
+        $data[ 'photo' ] = '';
+      }
     }
     catch ( Exception $e )
     {

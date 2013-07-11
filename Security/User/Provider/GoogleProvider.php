@@ -57,7 +57,10 @@ class GoogleProvider extends SocialUserProvider
       $data[ 'username' ] = $gData[ 'email' ];
     }
     
-    $data[ 'photo' ] = $gData[ 'picture' ];
+    $data[ 'photo' ] = '';
+    
+    if ( array_key_exists( 'picture', $gData ) )
+      $data[ 'photo' ] = $gData[ 'picture' ];
     
     return $data;
   }
