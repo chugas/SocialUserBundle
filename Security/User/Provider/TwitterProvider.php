@@ -39,16 +39,7 @@ class TwitterProvider extends SocialUserProvider
       $data[ 'id' ] = strtolower( $info->id );
       
       if ( isset( $info->name ) )
-      {
-        $nameAndLastNames = explode( " ", $info->name );
-        $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
-        
-        if ( count( $nameAndLastNames ) > 1 )
-          $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
-        
-        if ( count( $nameAndLastNames ) > 2 )
-          $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
-      }
+        $data = $this->extractFullName( $info->name, $data );
       
       $data[ 'email' ] = sprintf( "%s@%s.com", $data[ 'id' ], strtolower( $this->providerName ) );
       $data[ 'username' ] = $info->screen_name;

@@ -41,16 +41,7 @@ class FacebookProvider extends SocialUserProvider
     $data[ 'id' ] = $fData[ 'id' ];
     
     if ( isset( $fData[ 'name' ] ) )
-    {
-      $nameAndLastNames = explode( " ", $fData[ 'name' ] );
-      $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
-      
-      if ( count( $nameAndLastNames ) > 1 )
-        $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
-      
-      if ( count( $nameAndLastNames ) > 2 )
-        $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
-    }
+      $data = $this->extractFullName( $fData[ 'name' ], $data );
     
     if ( isset( $fData[ 'email' ] ) )
     {

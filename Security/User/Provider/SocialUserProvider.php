@@ -157,4 +157,20 @@ abstract class SocialUserProvider implements UserProviderInterface
     
     return $socialUser->getUser( );
   }
+  
+  private function extractFullName( $name, $data )
+  {
+    $nameAndLastNames = explode( " ", $name );
+    $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
+    
+    $data[ 'lastname' ] = '';
+    if ( count( $nameAndLastNames ) > 1 )
+      $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
+    
+    $data[ 'lastname2' ] = '';
+    if ( count( $nameAndLastNames ) > 2 )
+      $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
+    
+    return $data;
+  }
 }

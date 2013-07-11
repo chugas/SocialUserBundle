@@ -40,16 +40,7 @@ class GoogleProvider extends SocialUserProvider
     $data[ 'id' ] = $gData[ 'id' ];
     
     if ( isset( $gData[ 'name' ] ) )
-    {
-      $nameAndLastNames = explode( " ", $gData[ 'name' ] );
-      $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
-      
-      if ( count( $nameAndLastNames ) > 1 )
-        $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
-      
-      if ( count( $nameAndLastNames ) > 2 )
-        $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
-    }
+      $data = $this->extractFullName( $gData[ 'name' ], $data );
     
     if ( isset( $gData[ 'email' ] ) )
     {
