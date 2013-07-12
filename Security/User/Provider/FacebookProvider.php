@@ -40,8 +40,29 @@ class FacebookProvider extends SocialUserProvider
     
     $data[ 'id' ] = $fData[ 'id' ];
     
-    if ( isset( $fData[ 'name' ] ) )
-      $data = $this->extractFullName( $fData[ 'name' ], $data );
+    $data[ 'firstname' ] = $gData[ 'first_name' ];
+    if ( array_key_exists( 'middle_name', $fData ) )
+      $data[ 'first_name' ] .= $fData[ 'middle_name' ];
+    
+    $data[ 'lastname' ] = '';
+    $data[ 'lastname2' ] = '';
+    
+    if ( array_key_exists( 'last_name', $gData ) )
+    {
+      $lastNames = explode( " ", $gData[ 'last_name' ] );
+      $data[ 'lastname' ] = $lastNames[ 0 ];
+      
+      if ( count( $lastNames ) > 1 )
+      {
+        $skip = true;
+        foreach ( $lastNames as $lastName )
+        {
+          if ( !$skip )
+            $data[ 'lastname2' ] .= " " . $lastName;
+          $skip = false;
+        }
+      }
+    }
     
     if ( isset( $fData[ 'email' ] ) )
     {

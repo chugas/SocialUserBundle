@@ -38,9 +38,26 @@ class GoogleProvider extends SocialUserProvider
     }
     
     $data[ 'id' ] = $gData[ 'id' ];
+    $data[ 'firstname' ] = $gData[ 'given_name' ];
+    $data[ 'lastname' ] = '';
+    $data[ 'lastname2' ] = '';
     
-    if ( isset( $gData[ 'name' ] ) )
-      $data = $this->extractFullName( $gData[ 'name' ], $data );
+    if ( array_key_exists( 'family_name', $gData ) )
+    {
+      $lastNames = explode( " ", $gData[ 'family_name' ] );
+      $data[ 'lastname' ] = $lastNames[ 0 ];
+      
+      if ( count( $lastNames ) > 1 )
+      {
+        $skip = true;
+        foreach ( $lastNames as $lastName )
+        {
+          if ( !$skip )
+            $data[ 'lastname2' ] .= " " . $lastName;
+          $skip = false;
+        }
+      }
+    }
     
     if ( isset( $gData[ 'email' ] ) )
     {

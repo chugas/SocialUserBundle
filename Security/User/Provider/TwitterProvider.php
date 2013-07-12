@@ -38,8 +38,16 @@ class TwitterProvider extends SocialUserProvider
       $info = $this->twitter->account_verifyCredentials( );
       $data[ 'id' ] = strtolower( $info->id );
       
-      if ( isset( $info->name ) )
-        $data = $this->extractFullName( $info->name, $data );
+      $nameAndLastNames = explode( " ", $name );
+      $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
+      
+      $data[ 'lastname' ] = '';
+      if ( count( $nameAndLastNames ) > 1 )
+        $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
+      
+      $data[ 'lastname2' ] = '';
+      if ( count( $nameAndLastNames ) > 2 )
+        $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
       
       $data[ 'email' ] = sprintf( "%s@%s.com", $data[ 'id' ], strtolower( $this->providerName ) );
       $data[ 'username' ] = $info->screen_name;
