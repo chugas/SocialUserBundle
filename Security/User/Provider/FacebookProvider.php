@@ -42,7 +42,7 @@ class FacebookProvider extends SocialUserProvider
     
     $data[ 'firstname' ] = $fData[ 'first_name' ];
     if ( array_key_exists( 'middle_name', $fData ) )
-      $data[ 'first_name' ] .= $fData[ 'middle_name' ];
+      $data[ 'firstname' ] .= $fData[ 'middle_name' ];
     
     $data[ 'lastname' ] = '';
     $data[ 'lastname2' ] = '';
