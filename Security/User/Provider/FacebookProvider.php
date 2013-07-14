@@ -40,16 +40,16 @@ class FacebookProvider extends SocialUserProvider
     
     $data[ 'id' ] = $fData[ 'id' ];
     
-    $data[ 'firstname' ] = $gData[ 'first_name' ];
+    $data[ 'firstname' ] = $fData[ 'first_name' ];
     if ( array_key_exists( 'middle_name', $fData ) )
       $data[ 'first_name' ] .= $fData[ 'middle_name' ];
     
     $data[ 'lastname' ] = '';
     $data[ 'lastname2' ] = '';
     
-    if ( array_key_exists( 'last_name', $gData ) )
+    if ( array_key_exists( 'last_name', $fData ) )
     {
-      $lastNames = explode( " ", $gData[ 'last_name' ] );
+      $lastNames = explode( " ", $fData[ 'last_name' ] );
       $data[ 'lastname' ] = $lastNames[ 0 ];
       
       if ( count( $lastNames ) > 1 )
