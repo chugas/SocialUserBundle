@@ -41,11 +41,11 @@ class TwitterProvider extends SocialUserProvider
       $nameAndLastNames = explode( " ", $name );
       $data[ 'firstname' ] = $nameAndLastNames[ 0 ];
       
-      $data[ 'lastname' ] = '';
+      $data[ 'lastname' ] = " ";
       if ( count( $nameAndLastNames ) > 1 )
         $data[ 'lastname' ] = $nameAndLastNames[ 1 ];
       
-      $data[ 'lastname2' ] = '';
+      $data[ 'lastname2' ] = " ";
       if ( count( $nameAndLastNames ) > 2 )
         $data[ 'lastname2' ] = $nameAndLastNames[ 2 ];
       

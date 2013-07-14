@@ -39,8 +39,8 @@ class GoogleProvider extends SocialUserProvider
     
     $data[ 'id' ] = $gData[ 'id' ];
     $data[ 'firstname' ] = $gData[ 'given_name' ];
-    $data[ 'lastname' ] = '';
-    $data[ 'lastname2' ] = '';
+    $data[ 'lastname' ] = "";
+    $data[ 'lastname2' ] = " ";
     
     if ( array_key_exists( 'family_name', $gData ) )
     {
