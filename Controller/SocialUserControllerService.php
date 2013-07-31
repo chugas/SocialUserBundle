@@ -141,12 +141,15 @@ class SocialUserControllerService extends Controller
       $parameters[ 'user' ] = $authUser->getId( );
       $parameters[ 'social_name' ] = "FACEBOOK";
       $socialUser = $rm->getRepository( "UserBundle:SocialUser" )->findOneBy( $parameters );
-      $friends = $facebook->getFriends( $socialUser->getSocialId( ), null, "first_name" );
-      
-      foreach ( $friends as $friend )
+      if ( is_object( $socialUser ) && !empty( $socialUser ) )
       {
-        $friend[ 'photo' ] = "https://graph.facebook.com/" . $friend[ 'uid' ] . "/picture";
-        $facebookFriends[ $friend[ 'uid' ] ] = $friend;
+        $friends = $facebook->getFriends( $socialUser->getSocialId( ), null, "first_name" );
+        
+        foreach ( $friends as $friend )
+        {
+          $friend[ 'photo' ] = "https://graph.facebook.com/" . $friend[ 'uid' ] . "/picture";
+          $facebookFriends[ $friend[ 'uid' ] ] = $friend;
+        }
       }
     }
     
