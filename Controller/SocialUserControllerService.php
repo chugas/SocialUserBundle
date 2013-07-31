@@ -29,12 +29,12 @@ class SocialUserControllerService extends Controller
       {
         case 'orm':
           {
-            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Entity\\User';
+            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Entity\\SocialUser';
             break;
           }
         case 'mongodb':
           {
-            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Document\\User';
+            $this->mappingFQCN = 'BIT\\SocialUserBundle\\Document\\SocialUser';
             break;
           }
       }
@@ -109,9 +109,75 @@ class SocialUserControllerService extends Controller
     }
   }
   
-  public function getRepository( )
+  private function getFQCN( )
   {
     $this->computeMappingNames( );
-    return $this->getObjectManager( )->getRepository( $this->mappingBundle . ":" . $this->mappingClass );
+    return $this->mappingBundle . ":" . $this->mappingClass;
+  }
+  
+  public function getRepository( )
+  {
+    return $this->getObjectManager( )->getRepository( $this->getFQCN( ) );
+  }
+  
+  public function getQueryBuilder( )
+  {
+    return $this->getObjectManager( )->createQueryBuilder( $this->getFQCN( ) );
+  }
+  
+  public function getAllFacebookFriends( )
+  {
+    $rm = $this->getDoctrine( );
+    $sc = $this->get( 'security.context' );
+    $authUser = $sc->getToken( )->getUser( );
+    $facebookFriends = array( );
+    
+    if ( true === $sc->isGranted( 'ROLE_FACEBOOK' ) )
+    {
+      $facebook = $this->get( 'bit_facebook.api' );
+      
+      // get facebook friends
+      $parameters = array( );
+      $parameters[ 'user' ] = $authUser->getId( );
+      $parameters[ 'social_name' ] = "FACEBOOK";
+      $socialUser = $rm->getRepository( "UserBundle:SocialUser" )->findOneBy( $parameters );
+      $friends = $facebook->getFriends( $socialUser->getSocialId( ), null, "first_name" );
+      
+      foreach ( $friends as $friend )
+      {
+        $friend[ 'photo' ] = "https://graph.facebook.com/" . $friend[ 'uid' ] . "/picture";
+        $facebookFriends[ $friend[ 'uid' ] ] = $friend;
+      }
+    }
+    
+    return $facebookFriends;
+  }
+  
+  public function getSystemFacebookFriends( )
+  {
+    $allFriends = $this->getAllFacebookFriends( );
+    return $this->getRepository( )->findByIds( array_keys( $allFriends ) );
+  }
+  
+  public function getAllGoogleFriends( )
+  {
+    $rm = $this->getDoctrine( );
+    $sc = $this->get( 'security.context' );
+    $authUser = $sc->getToken( )->getUser( );
+    $googleFriends = array( );
+    
+    if ( true === $sc->isGranted( 'ROLE_GOOGLE' ) )
+    {
+      $google = $this->get( 'bit_google.contact' );
+      $googleFriends = $google->getContacts( );
+    }
+    
+    return $googleFriends;
+  }
+  
+  public function getSystemGoogleFriends( )
+  {
+    $allFriends = $this->getAllGoogleFriends( );
+    return $this->getRepository( )->findByEmails( array_keys( $allFriends ) );
   }
 }

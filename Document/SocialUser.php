@@ -5,9 +5,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @MongoDB\Document(collection="social_user")
+ * @MongoDB\Document(collection="social_user", repositoryClass="BIT\SocialUserBundle\Document\Repository\SocialUserRepository")
  */
-class User
+class SocialUser
 {
   /**
    * @MongoDB\Id

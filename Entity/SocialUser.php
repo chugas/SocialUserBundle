@@ -5,10 +5,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
  * @ORM\Table(name="social_user")
+ * @ORM\Entity(repositoryClass="BIT\SocialUserBundle\Entity\Repository\SocialUserRepository")
  */
-class User
+class SocialUser
 {
   /**
    * @ORM\Id
