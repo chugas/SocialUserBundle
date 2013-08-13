@@ -14,7 +14,7 @@
     "require": {
         "php": ">=5.3.2",
         "symfony/symfony": ">=2.2,<2.3-dev",
-        "symfony/security-bundle": ">=2.3",
+        "symfony/security-bundle": ">=2.2",
         "bitgandtter/user-bundle": ">=0.1",
         "bitgandtter/google-bundle": ">=0.1",
         "bitgandtter/facebook-bundle": ">=0.1",
